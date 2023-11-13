@@ -20,7 +20,7 @@ export default function SearchUsers({ users }: searchUsersProps) {
 
   return (
     <>
-      {/* {tags.length > 0 ? (
+      {tags.length > 0 ? (
         <div className="my-4 w-full">
           {seachedUser.map((item: IUser) => (
             <div key={item.id}>
@@ -36,7 +36,7 @@ export default function SearchUsers({ users }: searchUsersProps) {
             </div>
           ))}
         </div>
-      )} */}
+      )}
     </>
   );
 }

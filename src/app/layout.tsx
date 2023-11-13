@@ -7,18 +7,6 @@ import ThemeProviders from "@/lib/themeProvider";
 import Header from "@/components/header/header";
 import Footer from "@/components/footer/footer";
 import { Toaster } from "react-hot-toast";
-import { headers } from "next/headers";
-import CustomHeader from "@/components/customHeader/customHeader";
-import OnboardForm from "@/components/onboardForm/onboardForm";
-import { SessionProvider, useSession } from "next-auth/react";
-import {
-  authOptions,
-  loginIsRequiredServer,
-} from "./api/auth/[...nextauth]/route";
-import { useStore } from "zustand";
-import { redirect } from "next/navigation";
-import { formatSlugByUsername } from "@/lib/generateSlugs";
-import { getServerSession } from "next-auth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -61,7 +49,7 @@ export default async function RootLayout({ children }: rootLayoutProps) {
       >
         <SessionProviderWrapper customSession={session}>
           <ThemeProviders>
-            {session ? <CustomHeader /> : <></>}
+            {session && <Header />}
             <div className="w-screen max-w-xl mx-auto px-4 md:px-0">
               {children}
             </div>

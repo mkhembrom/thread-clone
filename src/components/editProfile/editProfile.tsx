@@ -18,15 +18,14 @@ import prisma from "@/lib/prismadb";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { IUser } from "@/app/types";
+import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
 
 interface editProfileProps {
-  currentUser: IUser | any;
   isOpenHere: boolean;
   setIsOpenHere: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function EditProfile({
-  currentUser,
   isOpenHere,
   setIsOpenHere,
 }: editProfileProps) {
@@ -35,6 +34,7 @@ export default function EditProfile({
   const [url, setUrl] = useState("");
   const [instagram, setInstagram] = useState("");
   const [twitter, setTwitter] = useState("");
+  const { user } = useCurrentUserForClient();
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_DB_HOST}/api/users/`, {
@@ -67,13 +67,10 @@ export default function EditProfile({
 
     toast
       .promise(
-        fetch(
-          `${process.env.NEXT_PUBLIC_DB_HOST}/api/users/${currentUser?.id}`,
-          {
-            method: "POST",
-            body: JSON.stringify({ username, bio, url, instagram, twitter }),
-          }
-        ),
+        fetch(`${process.env.NEXT_PUBLIC_DB_HOST}/api/users/${user?.id}`, {
+          method: "POST",
+          body: JSON.stringify({ username, bio, url, instagram, twitter }),
+        }),
         {
           loading: "Loading...",
           success: "Profile updated",

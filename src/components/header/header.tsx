@@ -1,4 +1,3 @@
-"use client";
 import Image from "next/image";
 import React from "react";
 import CustomLink from "../customLink/customLink";
@@ -8,16 +7,16 @@ import ProfileIcon from "../ui/icons/profile";
 import { DropdownMenuCheckboxes } from "../dropdown/dropdown";
 import CustomPostCreationDialoge from "../customDialoge/customPostCreationDialoge";
 import Link from "next/link";
-import ArrowIcon from "../ui/icons/arrow";
 import HeartIconOne from "../ui/icons/heartOne";
-import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
+import getCurrentUser from "../currentUser/currentUser";
+import CustomBackArrow from "../customBackArrow/customBackArrow";
 
 type Props = {
   backArrow?: boolean;
 };
 
-export default function Header({ backArrow }: Props) {
-  const { user } = useCurrentUserForClient();
+export default async function Header({ backArrow }: Props) {
+  const currentUser = await getCurrentUser();
 
   return (
     <header
@@ -67,13 +66,7 @@ export default function Header({ backArrow }: Props) {
       </Link>
 
       <div className="w-screen max-w-xl flex justify-between md:px-0">
-        {backArrow && (
-          <ul className="flex items-center w-full justify-start">
-            <CustomLink backArrow linkName="/">
-              <ArrowIcon />
-            </CustomLink>
-          </ul>
-        )}
+        <CustomBackArrow />
 
         <nav className="hidden md:flex w-full mx-auto justify-center">
           <ul className="flex items-center w-full mx-auto justify-center">
@@ -89,14 +82,14 @@ export default function Header({ backArrow }: Props) {
               <HeartIconOne />
             </CustomLink>
 
-            <CustomLink linkName={`/${user?.username}`}>
+            <CustomLink linkName={`/${currentUser?.username}`}>
               <ProfileIcon />
             </CustomLink>
           </ul>
         </nav>
       </div>
       <div className={`justify-end rounded-full`}>
-        <DropdownMenuCheckboxes currentUser={user?.username} />
+        <DropdownMenuCheckboxes />
       </div>
     </header>
   );

@@ -1,11 +1,8 @@
 "use client";
 import * as React from "react";
-import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -13,23 +10,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import ThemeSwitcher from "@/lib/themeSwitcher";
 import { signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import EditProfile from "../editProfile/editProfile";
-import { IUser } from "@/app/types";
 
-// type Checked = DropdownMenuCheckboxItemProps["checked"];
+interface dropdownMenuCheckboxesProps {}
 
-interface dropdownMenuCheckboxesProps {
-  currentUser: IUser | any;
-}
-
-export function DropdownMenuCheckboxes({
-  currentUser,
-}: dropdownMenuCheckboxesProps) {
-  const [showStatusBar, setShowStatusBar] = React.useState(true);
-  const [showActivityBar, setShowActivityBar] = React.useState(false);
-  const [showPanel, setShowPanel] = React.useState(false);
-  const router = useRouter();
+export function DropdownMenuCheckboxes({}: dropdownMenuCheckboxesProps) {
   const handleSignOut = () => {
     signOut();
   };
@@ -84,7 +69,6 @@ export function DropdownMenuCheckboxes({
             <EditProfile
               isOpenHere={isOpenHere}
               setIsOpenHere={setIsOpenHere}
-              currentUser={currentUser}
             />
           </DropdownMenuLabel>
           <DropdownMenuSeparator className={` bottom-1`} />

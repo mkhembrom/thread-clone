@@ -1,16 +1,15 @@
 "use client";
-
-import getCurrentUser from "@/components/currentUser/currentUser";
+import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
 import { useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
-import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import React from "react";
 
 interface profileIconProps {}
 
 export default function ProfileIcon({}: profileIconProps) {
   const { theme } = useTheme();
-  const { data: session } = useSession();
+  const { user } = useCurrentUserForClient();
   const colorSetOnThemeChange = () => {
     if (theme == "light") {
       return "#b8b8b8";
@@ -21,7 +20,7 @@ export default function ProfileIcon({}: profileIconProps) {
   const pathname = usePathname();
 
   const profilePageX = () => {
-    if (pathname === `/${session?.user?.name}`) {
+    if (pathname === `/${user?.username}`) {
       return true;
     }
     return false;
