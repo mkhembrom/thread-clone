@@ -1,0 +1,69 @@
+import bcrypt from "bcrypt";
+import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/lib/prismadb";
+import { join } from "path";
+import fs from "fs";
+import { v2 as cloudinary } from "cloudinary";
+import { User } from "@prisma/client";
+
+// export const config = {
+//   api: {
+//     bodyParser: false,
+//   },
+// };
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+export async function POST(request: Request) {
+  const formData = await request.formData();
+  const name = formData.get("name");
+  const username = formData.get("username");
+  const email = formData.get("email");
+  const password: FormDataEntryValue | null = formData.get("password");
+  const file = formData.get("image") as unknown as File;
+
+  const hashedPassword = await bcrypt.hash(`${password}`, 12);
+
+  if (!name || !email || !username) {
+    return NextResponse.json({ file: true, message: "success " });
+  }
+
+  if (file) {
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    const path = join("public", file.name);
+    fs.writeFileSync(path, buffer);
+
+    const uploadedResponse = await cloudinary.uploader.upload(path, {
+      folder: "threads",
+      upload_preset: "ml_default",
+      resource_type: "image",
+    });
+    const { secure_url } = uploadedResponse;
+
+    await prisma?.user.create({
+      data: <User>{
+        name: name,
+        email: email,
+        username: username,
+        hashPassword: hashedPassword,
+        image: secure_url,
+      },
+    });
+  } else {
+    await prisma?.user.create({
+      data: <User>{
+        name: name,
+        email: email,
+        username: username,
+        hashPassword: hashedPassword,
+      },
+    });
+  }
+
+  return NextResponse.json({ message: "Account Created Successfully" });
+}
