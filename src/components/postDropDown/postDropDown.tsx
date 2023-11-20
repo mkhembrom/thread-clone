@@ -16,8 +16,8 @@ import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
 
 interface postDropDownProps {
   children: React.ReactNode;
-  postId: string;
-  userId: string;
+  postId?: string;
+  userId?: string;
 }
 
 export default function PostDropDown({

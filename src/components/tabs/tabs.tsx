@@ -27,7 +27,7 @@ export default function Tabs({ user }: Props) {
   };
 
   return (
-    <div className="flex justify-evenly items-center w-full my-4">
+    <div className="flex justify-evenly items-center w-full mb-4">
       {tabs.map((tab, index) => {
         return (
           <div className="w-full flex-1" key={index}>

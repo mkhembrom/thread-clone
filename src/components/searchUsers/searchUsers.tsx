@@ -1,9 +1,11 @@
 "use client";
-import React from "react";
+import React, { Suspense } from "react";
 import UsersProfile from "../usersProfile/usersProfile";
 import { IUser } from "@/app/types";
 import useStore from "@/store/store";
 import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
+import { useSearchParams } from "next/navigation";
+import Loading from "@/app/post/loading";
 
 interface searchUsersProps {
   users?: any;
@@ -20,23 +22,15 @@ export default function SearchUsers({ users }: searchUsersProps) {
 
   return (
     <>
-      {tags.length > 0 ? (
-        <div className="my-4 w-full">
-          {seachedUser.map((item: IUser) => (
-            <div key={item.id}>
-              {user?.id !== item.id ? <UsersProfile user={item} /> : <></>}
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="my-4 w-full">
-          {users.map((item: IUser) => (
-            <div key={item.id}>
-              {user?.id !== item.id ? <UsersProfile user={item} /> : <></>}
-            </div>
-          ))}
-        </div>
-      )}
+      <div className=" w-full">
+        {seachedUser.map((item: IUser) => (
+          <div key={item.id}>
+            <Suspense fallback={<Loading />}>
+              <UsersProfile user={item} />
+            </Suspense>
+          </div>
+        ))}
+      </div>
     </>
   );
 }

@@ -21,10 +21,10 @@ export default function SearchIcon() {
       className="text-black dark:text-white"
       color={pathname === "/search" ? "currentColor" : colorSetOnThemeChange()}
       fill={pathname === "/search" ? "currentColor" : "transparent"}
-      height="26"
+      height="24"
       role="img"
       viewBox="0 0 26 26"
-      width="26"
+      width="24"
     >
       <title>Search</title>
       <path

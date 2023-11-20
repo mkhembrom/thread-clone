@@ -2,12 +2,7 @@ import fs from "fs";
 import { v2 as cloudinary } from "cloudinary";
 import { NextResponse } from "next/server";
 import { join } from "path";
-
-// export const config = {
-//   api: {
-//     bodyParser: false,
-//   },
-// };
+import getCurrentUser from "@/components/currentUser/currentUser";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -22,12 +17,26 @@ export async function POST(request: Request) {
   const userId = formData.get("userId");
   const file = formData.get("file") as unknown as File;
 
+  const currentUser = await getCurrentUser();
   if (!file) {
-    await prisma?.comment.create({
+    const comment = await prisma?.comment.create({
       data: {
         userId: `${userId}`,
         reply: `${reply}`,
         postId: `${postId}`,
+      },
+      include: {
+        post: true,
+      },
+    });
+
+    await prisma?.notification.create({
+      data: {
+        commentId: comment?.id,
+        userId: currentUser?.id,
+        toUserId: comment?.post?.userId,
+        postId: `${postId}`,
+        body: `${currentUser?.username} commented on your post`,
       },
     });
   } else {
@@ -45,7 +54,7 @@ export async function POST(request: Request) {
     );
     const { secure_url, original_filename } = uploadedResponse;
 
-    await prisma?.comment.create({
+    const comment = await prisma?.comment.create({
       data: {
         userId: `${userId}`,
         reply: `${reply}`,
@@ -56,6 +65,19 @@ export async function POST(request: Request) {
             imageName: original_filename,
           },
         },
+      },
+      include: {
+        post: true,
+      },
+    });
+
+    await prisma?.notification.create({
+      data: {
+        commentId: comment?.id,
+        userId: currentUser?.id,
+        toUserId: comment?.post?.userId,
+        postId: `${postId}`,
+        body: `${currentUser?.username} commented on your post`,
       },
     });
   }

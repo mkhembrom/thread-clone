@@ -50,7 +50,7 @@ export default async function ChildComment({
               <></>
             )}
 
-            <CommentButtons comment={item} currentUser={currentUser!} />
+            <CommentButtons comment={item} />
             <Button
               variant={"link"}
               size={"link"}
@@ -70,7 +70,11 @@ export default async function ChildComment({
               variant={"ghost"}
               size={"icon"}
             >
-              <CommentDropDown commentId={item.id} postId={item.postId}>
+              <CommentDropDown
+                commentId={item.id}
+                postId={item.postId}
+                userId={currentUser?.id!}
+              >
                 <ThreeDotsIcon />
               </CommentDropDown>
             </Button>

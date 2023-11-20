@@ -7,25 +7,21 @@ import HeartLikeIcon from "../ui/icons/heartLike";
 import HeartIcon from "../ui/icons/heart";
 import { useRouter } from "next/navigation";
 import useStore from "@/store/store";
+import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
 
 interface postLikeButtonProps {
   postData?: IPost;
-  session?: IUser | any;
 }
-export default function PostLikeButton({
-  postData,
-  session,
-}: postLikeButtonProps) {
+export default function PostLikeButton({ postData }: postLikeButtonProps) {
   let isLiked;
+  const { user } = useCurrentUserForClient();
   const [liked, setLiked] = useState<boolean | undefined>(isLiked);
   const route = useRouter();
-  const handleLike = async (postId: string, userId: string) => {
-    console.log(`${process.env.NEXT_PUBLIC_DB_HOST}/api/like/${postId}`);
+  const handleLike = async (postId: string) => {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_DB_HOST}/api/like/${postId}`,
       {
         method: "POST",
-        body: JSON.stringify({ userId }),
         cache: "no-cache",
       }
     );
@@ -38,14 +34,14 @@ export default function PostLikeButton({
     }
   };
 
-  isLiked = postData?.likes?.some((item) => item?.userId === session?.id);
+  isLiked = postData?.likes?.some((item) => item?.userId === user?.id);
 
   return (
     <Button
       variant={"ghost"}
       className="rounded-full"
       size={"icon"}
-      onClick={() => handleLike(postData?.id!, session?.id!)}
+      onClick={() => handleLike(postData?.id!)}
     >
       {isLiked ? <HeartLikeIcon /> : <HeartIcon />}
     </Button>

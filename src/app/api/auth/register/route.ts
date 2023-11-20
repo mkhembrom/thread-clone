@@ -4,7 +4,7 @@ import prisma from "@/lib/prismadb";
 import { join } from "path";
 import fs from "fs";
 import { v2 as cloudinary } from "cloudinary";
-import { User } from "@prisma/client";
+import { Socials, User } from "@prisma/client";
 
 // export const config = {
 //   api: {
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     });
     const { secure_url } = uploadedResponse;
 
-    await prisma?.user.create({
+    const userUpdate = await prisma?.user.create({
       data: <User>{
         name: name,
         email: email,
@@ -54,13 +54,31 @@ export async function POST(request: Request) {
         image: secure_url,
       },
     });
+
+    await prisma?.socials.create({
+      data: <Socials>{
+        instagram: "",
+        url: "",
+        twitter: "",
+        userId: userUpdate.id,
+      },
+    });
   } else {
-    await prisma?.user.create({
+    const userUpdate = await prisma?.user.create({
       data: <User>{
         name: name,
         email: email,
         username: username,
         hashPassword: hashedPassword,
+      },
+    });
+
+    await prisma?.socials.create({
+      data: <Socials>{
+        instagram: "",
+        url: "",
+        twitter: "",
+        userId: userUpdate.id,
       },
     });
   }

@@ -94,7 +94,8 @@ model Post {
   comments Comment[]
   user User @relation("UserPost",fields: [userId], references: [id], onDelete: Cascade)
   reposts Repost[] @relation("PostRepost")
-    notification Notification[]
+  notification Notification[]
+
 
 }
 
@@ -105,8 +106,7 @@ model Repost {
   user       User      @relation("UserRepost",fields: [userId], references: [id])
   postId     String @db.ObjectId
   post      Post     @relation( "PostRepost",fields: [postId], references: [id])
-    notification Notification[]
-
+notification Notification[]
 }
 
 
@@ -162,6 +162,7 @@ model Comment {
   parentComment Comment? @relation("Replies", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   replies     Comment[]  @relation("Replies")
   notification Notification[]
+
 }
 
 model Notification {
@@ -174,6 +175,7 @@ model Notification {
   commentId String? @db.ObjectId
   repostId String? @db.ObjectId
 
+  toUserId  String? @db.ObjectId
   user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
   post Post? @relation(fields: [postId], references: [id], onDelete: Cascade)
   comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)

@@ -80,8 +80,8 @@ export default function CommentToCommentButton({
       <DialogTrigger>
         <MessageIcon />
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[567px] p-4 rounded-3xl ">
-        <div className="flex flex-col space-y-4">
+      <DialogContent className="sm:max-w-[567px] p-4 rounded-3xl dark:bg-zinc-800">
+        <div className="flex flex-col space-y-4 ">
           <div className="flex flex-row items-start justify-between">
             <div className="flex items-start  space-x-3">
               <AvatarCn source={comment.user.image!} />
@@ -150,10 +150,14 @@ export default function CommentToCommentButton({
           </div>
         </div>
         <div className="flex justify-between items-center mt-20">
-          <Button className="" variant={"ghost"}>
+          <Button className="hover:bg-zinc-500" variant={"ghost"}>
             Anyone can reply
           </Button>
-          <Button onClick={handleSubmit} className="" variant={"outline"}>
+          <Button
+            onClick={handleSubmit}
+            className="dark:bg-zinc-500 bg-zinc-300 hover:dark:bg-zinc-700"
+            variant={"outline"}
+          >
             Post
           </Button>
         </div>

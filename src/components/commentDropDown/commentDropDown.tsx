@@ -17,12 +17,13 @@ interface postDropDownProps {
   children: React.ReactNode;
   commentId: string;
   postId: string;
+  userId: string;
 }
 
 export default function CommentDropDown({
   children,
   commentId,
-  postId,
+  userId,
 }: postDropDownProps) {
   const { user } = useCurrentUserForClient();
 
@@ -36,7 +37,7 @@ export default function CommentDropDown({
           </Button>
         </DropdownMenuLabel>
 
-        {user?.id === commentId && (
+        {user?.id === userId && (
           <>
             <DropdownMenuSeparator className={`$ bottom-1`} />
             <DropdownMenuLabel className="cursor-pointer p-2 w-full">

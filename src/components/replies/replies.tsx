@@ -23,12 +23,7 @@ async function getComment(postId: string) {
 
 export default async function Replies({ postId }: repliesProps) {
   const { comments } = await getComment(postId);
-  // const currentUser = await getCurrentUser();
-
   const postComments = comments.filter((item: any) => item.parentId === null);
-  // const commentReply = commentReplies.filter(
-  //   (item: any) => item.parentId !== null
-  // );
 
   return (
     <div className="w-full flex flex-col my-4">
@@ -37,7 +32,7 @@ export default async function Replies({ postId }: repliesProps) {
           key={item.id}
           className="border-t dark:border-zinc-600 border-zinc-300 py-4 my-2"
         >
-          <RootComment item={item} />
+          <RootComment comment={item} />
         </div>
       ))}
     </div>

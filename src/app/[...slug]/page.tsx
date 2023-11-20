@@ -74,11 +74,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
         <PostButtons postData={post} />
 
-        <ReplyAndLike
-          postData={post}
-          replies={post.comments}
-          user={currentUser}
-        />
+        <ReplyAndLike postData={post} replies={post.comments} />
       </div>
 
       <Replies postId={postId} />

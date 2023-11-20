@@ -26,7 +26,6 @@ export default function Register({}: Props) {
     email: "",
     password: "",
   };
-  const [isImage, setIsImage] = useState("");
   const [user, setUser] = useState<User>(initialUser);
   const [selectedFile, setSelectedFile] = useState<File | null | undefined>(
     null

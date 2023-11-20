@@ -18,8 +18,6 @@ interface PostProps {
 }
 
 export default async function Post({ post }: PostProps) {
-  // const currentUser: IUser | any = await getCurrentUser();
-
   const formattedDate = formatTimeAgo(`${post?.createdAt}`);
   return (
     <div

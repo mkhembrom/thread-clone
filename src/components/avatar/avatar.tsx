@@ -1,16 +1,20 @@
 "use client";
 import React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 type Props = {
   source?: string;
   height?: string;
   width?: string;
+  id?: string;
 };
 
-export default function AvatarCn({ source, width, height }: Props) {
+export default function AvatarCn({ source, width, height, id }: Props) {
   return (
-    <Avatar className={`w-${width} h-${height}  object-cover rounded-full`}>
+    <Avatar
+      id={id}
+      className={`w-${width} h-${height}  object-cover rounded-full`}
+    >
       <AvatarImage
         className="object-cover shadow-sm"
         src={source}

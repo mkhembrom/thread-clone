@@ -45,7 +45,6 @@ export async function POST(
   request: NextRequest,
   { params }: { params: { slug: string } }
 ) {
-  const currentUser = await getCurrentUser();
   const body = await request.json();
 
   const { userId } = body;
@@ -75,26 +74,3 @@ export async function POST(
     return NextResponse.json({ repost });
   }
 }
-
-// export async function DELETE(
-//   request: NextRequest,
-//   { params }: { params: { slug: string } }
-// ) {
-//   const repostId = params.slug;
-
-//   const findPost = await prisma?.repost.findFirst({
-//     where: {
-//       postId: repostId,
-//     },
-//   });
-
-//   if (findPost) {
-//     await prisma?.repost.delete({
-//       where: {
-//         id: findPost.id,
-//       },
-//     });
-//   }
-
-//   return NextResponse.json({ message: "remove repost" });
-// }

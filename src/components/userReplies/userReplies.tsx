@@ -13,6 +13,7 @@ import PostButtons from "../postButtons/postButtons";
 import ImagePreview from "../imagePreview/imagePreview";
 import PostDropDown from "../postDropDown/postDropDown";
 import Link from "next/link";
+import ImageLightBox from "../imageLightBox/imageLightBox";
 
 interface userRepliesProps {
   item?: IComment | any;
@@ -23,8 +24,6 @@ export default async function UserReplies({ item }: userRepliesProps) {
 
   return (
     <>
-      {/*  */}
-
       {item.parentId ? (
         <>
           <div className="flex w-full flex-col mb-4 ">
@@ -47,21 +46,15 @@ export default async function UserReplies({ item }: userRepliesProps) {
                     <p className="text-sm pb-2">{item?.parentComment?.reply}</p>
 
                     {item?.parentComment.images.length > 0 ? (
-                      <Image
-                        className="rounded-2xl"
-                        src={item?.parentComment.images[0]?.imageUrl}
-                        width={120}
-                        height={180}
-                        alt={item.id}
+                      <ImageLightBox
+                        img={item?.images[0]?.imageUrl}
+                        id={item?.id}
                       />
                     ) : (
                       <></>
                     )}
 
-                    <CommentButtons
-                      comment={item.parentComment}
-                      currentUser={currentUser!}
-                    />
+                    <CommentButtons comment={item.parentComment} />
                     <Button
                       variant={"link"}
                       size={"link"}
@@ -86,6 +79,7 @@ export default async function UserReplies({ item }: userRepliesProps) {
                       <CommentDropDown
                         commentId={item.parentComment.id}
                         postId={item.parentComment.postId}
+                        userId={currentUser?.id!}
                       >
                         <ThreeDotsIcon />
                       </CommentDropDown>
@@ -115,18 +109,15 @@ export default async function UserReplies({ item }: userRepliesProps) {
                     <p className="text-sm pb-2">{item?.reply}</p>
 
                     {item?.images.length > 0 ? (
-                      <Image
-                        className="rounded-2xl"
-                        src={item?.images[0]?.imageUrl}
-                        width={120}
-                        height={180}
-                        alt={item.id}
+                      <ImageLightBox
+                        img={item?.images[0]?.imageUrl}
+                        id={item?.id}
                       />
                     ) : (
                       <></>
                     )}
 
-                    <CommentButtons comment={item} currentUser={currentUser!} />
+                    <CommentButtons comment={item} />
                     <Button
                       variant={"link"}
                       size={"link"}
@@ -148,7 +139,11 @@ export default async function UserReplies({ item }: userRepliesProps) {
                       variant={"ghost"}
                       size={"icon"}
                     >
-                      <CommentDropDown commentId={item.id} postId={item.postId}>
+                      <CommentDropDown
+                        commentId={item.id}
+                        postId={item.postId}
+                        userId={currentUser?.id!}
+                      >
                         <ThreeDotsIcon />
                       </CommentDropDown>
                     </Button>
@@ -230,18 +225,15 @@ export default async function UserReplies({ item }: userRepliesProps) {
                     <p className="text-sm pb-2">{item?.reply}</p>
 
                     {item?.images.length > 0 ? (
-                      <Image
-                        className="rounded-2xl"
-                        src={item?.images[0]?.imageUrl}
-                        width={120}
-                        height={180}
-                        alt={item.id}
+                      <ImageLightBox
+                        img={item?.images[0]?.imageUrl}
+                        id={item?.id}
                       />
                     ) : (
                       <></>
                     )}
 
-                    <CommentButtons comment={item} currentUser={currentUser!} />
+                    <CommentButtons comment={item} />
                     <Button
                       variant={"link"}
                       size={"link"}
@@ -263,7 +255,11 @@ export default async function UserReplies({ item }: userRepliesProps) {
                       variant={"ghost"}
                       size={"icon"}
                     >
-                      <CommentDropDown commentId={item.id} postId={item.postId}>
+                      <CommentDropDown
+                        commentId={item.id}
+                        postId={item.postId}
+                        userId={currentUser?.id!}
+                      >
                         <ThreeDotsIcon />
                       </CommentDropDown>
                     </Button>

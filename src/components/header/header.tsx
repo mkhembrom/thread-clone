@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React from "react";
+import React, { Suspense } from "react";
 import CustomLink from "../customLink/customLink";
 import HomeIcon from "../ui/icons/home";
 import SearchIcon from "../ui/icons/search";

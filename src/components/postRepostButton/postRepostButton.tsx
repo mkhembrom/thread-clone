@@ -6,48 +6,42 @@ import RetweetIcon from "../ui/icons/retweet";
 import toast from "react-hot-toast";
 import RetweetGreenIcon from "../ui/icons/retweetgreen";
 import { useRouter } from "next/navigation";
+import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
 
 interface postRepostButtonProps {
   postData: IPost;
-  currentUser: IUser | any;
 }
 
-export default function PostRepostButton({
-  postData,
-  currentUser,
-}: postRepostButtonProps) {
+export default function PostRepostButton({ postData }: postRepostButtonProps) {
+  const { user } = useCurrentUserForClient();
   const router = useRouter();
   let repostdata;
-  const handleRepostBtn = async (postId: string) => {
+  const handleRepostBtn = async () => {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_DB_HOST}/api/repost/${postId}`,
+      `${process.env.NEXT_PUBLIC_DB_HOST}/api/repost/${postData.id}`,
       {
         method: "POST",
-        body: JSON.stringify({ userId: currentUser.id }),
+        body: JSON.stringify({ userId: user?.id }),
         cache: "no-cache",
       }
     );
 
     if (res.ok) {
-      toast.success("success");
+      toast.success("success", {
+        style: {
+          borderRadius: "8px",
+          padding: "12px",
+          width: "250px",
+          backgroundColor: "black",
+          color: "white",
+        },
+      });
       router.refresh();
     }
   };
 
-  // useEffect(() => {
-  //   fetch(`${process.env.NEXT_PUBLIC_DB_HOST}/api/repost/${currentUser?.id}`, {
-  //     method: "GET",
-  //   })
-  //     .then((res) => {
-  //       return res.json();
-  //     })
-  //     .then((data) => {
-  //       router.refresh();
-  //     });
-  // }, [currentUser?.id, router]);
-
   repostdata = postData?.reposts?.some(
-    (item: any) => `${item?.userId}` == `${currentUser?.id}`
+    (item: any) => `${item?.userId}` === `${user?.id}`
   );
 
   return (
@@ -55,7 +49,7 @@ export default function PostRepostButton({
       variant={"ghost"}
       className={`rounded-full`}
       size={"icon"}
-      onClick={() => handleRepostBtn(postData.id)}
+      onClick={handleRepostBtn}
     >
       {repostdata ? <RetweetGreenIcon /> : <RetweetIcon />}
     </Button>

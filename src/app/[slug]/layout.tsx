@@ -8,6 +8,9 @@ import { loginIsRequiredServer } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { IUser } from "../types";
+import { Button } from "@/components/ui/button";
+import FollowButton from "@/components/followButton/followButton";
+import EditProfileButton from "@/components/editProfileButton/editProfileButton";
 
 type Props = {
   children: ReactNode;
@@ -28,24 +31,30 @@ async function getProfile(slug: string) {
 }
 
 export default async function Layout({ children, params }: Props) {
-  // await loginIsRequiredServer();
+  await loginIsRequiredServer();
 
   const username = params.slug;
   const { user } = await getProfile(username);
 
   const lastProfile = user?.followedBy[user?.followedBy.length - 1];
 
+  const currentUser = await getCurrentUser();
+  function trimTxt(txt: string) {
+    return txt.slice(8);
+  }
   return (
     <div className="w-screen max-w-xl mx-auto px-4 md:px-0">
       <div className="flex justify-between items-center py-4">
         <div className="flex flex-col items-start justify-center ">
           <h1 className="text-xl font-bold">{user?.name}</h1>
-          <p className="flex items-center justify-center">
+          <div className="flex items-center justify-center">
             @{user?.username}
-            <span className="dark:bg-zinc-800 bg-zinc-300 text-[12px] ml-1 px-1 italic rounded-full">
-              threads.net
-            </span>
-          </p>
+            <Link href={"/"}>
+              <span className="dark:bg-[#1e1e1e] bg-zinc-300 text-[12px] font-thin ml-1 p-1 px-2  rounded-full">
+                threads.net
+              </span>
+            </Link>
+          </div>
         </div>
 
         <AvatarCn source={user?.image!} width={"20"} height={"20"} />
@@ -61,10 +70,13 @@ export default async function Layout({ children, params }: Props) {
               <AvatarCn source={lastProfile?.image!} width="5" height="5" />
             </div>
           )}
-          <p className="hover:underline text-zinc-400 cursor-pointer">
+          <p className="hover:underline dark:text-zinc-300  cursor-pointer">
             {user?.followedBy.length} followers
-          </p>{" "}
-          {user?.socials?.url! && <div> . {user?.socials?.url!}</div>}
+          </p>
+
+          {user?.socials?.url! && (
+            <span>&#xB7; {trimTxt(user?.socials?.url!)}</span>
+          )}
         </div>
 
         <div className="flex space-x-3">
@@ -80,7 +92,14 @@ export default async function Layout({ children, params }: Props) {
           )}
         </div>
       </div>
-      <div className="flex items-center justify-center">
+      <div>
+        {currentUser?.username === username ? (
+          <EditProfileButton user={user} />
+        ) : (
+          <FollowButton user={user} />
+        )}
+      </div>
+      <div className={`flex items-center justify-center`}>
         <Tabs user={user} />
       </div>
 

@@ -6,12 +6,10 @@ import { IComment, IPost, IUser } from "@/app/types";
 interface replyAndCommentProps {
   postData: IPost;
   replies?: IComment[];
-  user?: IUser | any;
 }
 
 export default function ReplyAndLike({
   postData,
-  user,
   replies,
 }: replyAndCommentProps) {
   const likeCount = postData?.likes.length;

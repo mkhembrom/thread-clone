@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import React, { useState } from "react";
@@ -10,11 +11,12 @@ import toast from "react-hot-toast";
 import Link from "next/link";
 import { AiFillGithub } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
+import { revalidatePath } from "next/cache";
 
-interface User {
+type User = {
   userinfo: string;
   password: string;
-}
+};
 
 export default function Login() {
   const initialUser: User = {
@@ -71,9 +73,6 @@ export default function Login() {
         }
       }
 
-      // if (!user.userinfo) toast.error("No Email & username provided");
-      // if (!user.password) toast.error("No password provided");
-
       if (user.userinfo && user.password) {
         setLoading(true);
         const result = await signIn("credentials", {
@@ -115,23 +114,7 @@ export default function Login() {
         />
       </div>
       <div className="flex flex-col z-50">
-        {/* {message && (
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 100,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{ type: "spring", duration: 0.3 }}
-            className="p-4 text-white bg-green-500 rounded-xl"
-          >
-            {message}
-          </motion.div>
-        )} */}
-        <div className="flex space-x-4 justify-end items-center my-4">
+        {/* <div className="flex space-x-4 justify-end items-center my-4">
           <p>Log in with </p>
           <Button className="cursor-pointer" onClick={handleInstagram}>
             <span className="mr-2">
@@ -146,7 +129,7 @@ export default function Login() {
             </span>{" "}
             Google
           </Button>
-        </div>
+        </div> */}
         <form
           className="w-96 flex flex-col z-50 space-y-2"
           onSubmit={handleSubmit}
@@ -155,31 +138,23 @@ export default function Login() {
             name="userinfo"
             className="p-4 rounded-lg outline-zinc-800 active:outline-1 outline-1"
             placeholder="Email or Username"
-            value={user.userinfo}
             type="text"
+            value={user.userinfo}
             onChange={handleChange}
           />
           <input
             name="password"
             className="p-4 rounded-lg "
             placeholder="Password"
+            type="password"
             value={user.password}
             onChange={handleChange}
-            type="password"
           />
 
-          <Button type="submit" className="py-7 rounded-lg" disabled={loading}>
+          <Button type="submit" className="py-7 rounded-lg">
             Log in
           </Button>
-          {/* <Button type="submit" className="py-7 rounded-lg">
-            {!loading ? (
-              "Log in"
-            ) : (
-              <span className="flex items-center justify-between">
-                <LoadingIcon /> Processing...
-              </span>
-            )}
-          </Button> */}
+
           <a className="text-end text-gray-300 font-light py-4 cursor-pointer">
             Forget password?
           </a>

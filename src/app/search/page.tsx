@@ -1,29 +1,52 @@
 import React from "react";
-import getCurrentUser from "@/components/currentUser/currentUser";
 import { loginIsRequiredServer } from "../api/auth/[...nextauth]/route";
 import SearchInput from "@/components/searchInput/searchInput";
-import SearchUsers from "@/components/searchUsers/searchUsers";
-
+import UsersProfile from "@/components/usersProfile/usersProfile";
+import { IUser } from "../types";
+import getCurrentUser from "@/components/currentUser/currentUser";
+import prisma from "@/lib/prismadb";
 type Props = {};
 
-async function getUsers() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_DB_HOST}/api/search/`);
+export default async function page({}: Props) {
+  const currentUser = await getCurrentUser();
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-  return res.json();
-}
+  const users: IUser | any = await prisma?.user.findMany({
+    where: {
+      NOT: {
+        id: currentUser?.id,
+      },
+    },
+    select: {
+      id: true,
+      image: true,
+      username: true,
+      name: true,
+      posts: true,
+      comments: true,
+      likes: true,
+      followedByIDs: true,
+      followingIDs: true,
+      following: true,
+      followedBy: true,
+    },
+  });
 
-export default async function Search({}: Props) {
-  const { users } = await getUsers();
   await loginIsRequiredServer();
 
   return (
-    <div className="min-h-fit">
-      <SearchInput />
-
-      {users && <SearchUsers users={users} />}
+    <div className="min-h-fit relative">
+      <div className="z-30 absolute top-0 left-0 right-0">
+        <SearchInput users={users} />
+      </div>
+      <div className="z-0 absolute  top-20 left-0 right-0">
+        <div className=" w-full">
+          {users.map((item: IUser) => (
+            <div key={item.id}>
+              <UsersProfile user={item} />
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

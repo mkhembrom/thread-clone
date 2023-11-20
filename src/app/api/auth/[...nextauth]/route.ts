@@ -1,14 +1,16 @@
-import NextAuth, { AuthOptions, ISODateString, User } from "next-auth";
+import NextAuth, {
+  AuthOptions,
+  ISODateString,
+  getServerSession,
+} from "next-auth";
 import bcrypt from "bcrypt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "@/lib/prismadb";
-import GitHubProvider, { GithubProfile } from "next-auth/providers/github";
+import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import InstagramProvider from "next-auth/providers/instagram";
 import { redirect } from "next/navigation";
-import { useSession } from "next-auth/react";
-import getCurrentUser from "@/components/currentUser/currentUser";
 import { Prisma } from "@prisma/client";
 
 export type CustomUserSession = {
@@ -22,7 +24,7 @@ export type CustomUser = {
   email?: string | null;
   username?: string | null;
   image?: string | null;
-  bio?: boolean | null;
+  bio?: string | null;
   hashPassword?: boolean | null;
 };
 
@@ -149,32 +151,15 @@ const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
 
 export async function loginIsRequiredServer() {
-  // const session = await getServerSession(authOptions);
-  const session = await getCurrentUser();
+  const session = await getServerSession(authOptions);
   if (!session) {
     redirect("/login");
   }
 }
 
-export const useLoginPageIsRequiredServer = () => {
-  const session = useSession();
-  if (session) {
-    redirect("/");
-  }
-};
-
-// export async function loginIsUsername() {
-//   const session = await getCurrentUser();
-//   if ((session && session.username === "") || session?.username === null) {
-//     redirect("/onboard");
-//   }
-// }
-
-// export const useLoginIsRequiredClient = () => {
+// export const useLoginPageIsRequiredServer = () => {
 //   const session = useSession();
-//   const router = useRouter();
-
-//   if (!session) {
-//     router.push("/login");
+//   if (session) {
+//     redirect("/");
 //   }
 // };

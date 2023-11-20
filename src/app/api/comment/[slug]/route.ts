@@ -88,6 +88,9 @@ export async function POST(
 
   const parentComment = await prisma.comment.findUnique({
     where: { id: commentId },
+    select: {
+      userId: true,
+    },
   });
 
   if (!parentComment) {
@@ -124,22 +127,16 @@ export async function POST(
       },
     });
 
-    const notify = await prisma.notification.create({
+    const notify = await prisma?.notification.create({
       data: {
         commentId: commentId,
         userId: currentUser?.id,
         postId: `${postId}`,
-        body: `user comment on ${postId}`,
+        toUserId: parentComment.userId,
+        body: `${currentUser?.username} commented on your post`,
       },
     });
-    // const commentsWithReplies = await prisma.comment.findMany({
-    //   where: {
-    //     postId: `${postId}`,
-    //   },
-    //   include: {
-    //     replies: true,
-    //   },
-    // });
+    console.log(notify);
     return NextResponse.json({ commentsOfComment, notify });
   } else {
     const commentsOfComment = await prisma?.comment.create({
@@ -151,27 +148,18 @@ export async function POST(
       },
     });
 
-    const notify = await prisma.notification.create({
+    const notify = await prisma?.notification.create({
       data: {
         commentId: commentId,
         userId: currentUser?.id,
+        toUserId: parentComment.userId,
         postId: `${postId}`,
-        body: `user comment on ${postId}`,
+        body: `${currentUser?.username} commented on your reply`,
       },
     });
 
-    // const commentsWithReplies = await prisma.comment.findMany({
-    //   where: {
-    //     postId: `${postId}`,
-    //   },
+    console.log(notify);
 
-    //   include: {
-    //     replies: true,
-    //     post: true,
-    //     user: true,
-    //     images: true,
-    //   },
-    // });
     return NextResponse.json({ commentsOfComment, notify });
   }
 }
@@ -180,12 +168,13 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: { slug: string } }
 ) {
-  const slug = params.slug;
-  const comments = await prisma?.comment.delete({
+  const commentId = params.slug;
+
+  await prisma?.comment.delete({
     where: {
-      id: slug,
+      id: commentId,
     },
   });
 
-  return NextResponse.json({ comments });
+  return NextResponse.json({ comments: "deleted" });
 }

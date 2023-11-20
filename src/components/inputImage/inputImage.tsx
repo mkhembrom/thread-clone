@@ -10,18 +10,17 @@ import AnimateSpinnerIcon from "../ui/icons/animateSpinner";
 import toast, { Toaster } from "react-hot-toast";
 import { IPost, ISession } from "@/app/types";
 import { Session } from "inspector";
+import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
 
 interface InputImageProps {
   isOpen: boolean;
   postData: IPost;
-  session: ISession | any;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function InputImage({
   isOpen,
   postData,
-  session,
   setIsOpen,
 }: InputImageProps) {
   const router = useRouter();
@@ -31,6 +30,8 @@ export default function InputImage({
   const [selectedFile, setSelectedFile] = useState<File | null | undefined>(
     null
   );
+  const { user } = useCurrentUserForClient();
+
   const [image, setImage] = useState<string | undefined>("");
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file: File | undefined = e.target?.files?.[0];
@@ -56,27 +57,15 @@ export default function InputImage({
 
     if (selectedFile == null || selectedFile == undefined) {
       formData.append("postId", postData.id);
-      formData.append("userId", session.id);
+      formData.append("userId", user?.id!);
     } else {
       formData.append("postId", postData.id);
-      formData.append("userId", session.id);
+      formData.append("userId", user?.id!);
       formData.append("file", selectedFile);
     }
 
     try {
-      // setIsLoading(true);
-      // const uploadReply = await fetch(
-      //   "${process.env.NEXT_PUBLIC_DB_HOST}/api/upload/post/comment",
-
-      //   {
-      //     method: "POST",
-      //     body: formData,
-      //     cache: "no-cache",
-      //   }
-      // );
       setIsOpen(false);
-
-      // if (uploadReply.ok) {
       toast
         .promise(
           fetch(
@@ -116,9 +105,9 @@ export default function InputImage({
   return (
     <>
       <div className={`flex space-x-2 w-full `}>
-        <AvatarCn source={session?.image!} />
+        <AvatarCn source={user?.image!} />
         <div className="flex flex-col w-full">
-          <span className=" font-bold">{session?.name}</span>
+          <span className=" font-bold">{user?.name}</span>
           <textarea
             value={reply}
             onChange={(e) => setReply(e.target.value)}

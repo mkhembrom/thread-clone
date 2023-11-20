@@ -16,12 +16,12 @@ export default async function PostButtons({ postData }: postButtonsProps) {
   const currentUser = await getCurrentUser();
   return (
     <div className="flex space-x-1 items-center py-2 z-10">
-      <PostLikeButton session={currentUser} postData={postData} />
+      <PostLikeButton postData={postData} />
 
-      <CustomComment currentUser={currentUser!} postData={postData}>
+      <CustomComment postData={postData}>
         <MessageIcon />
       </CustomComment>
-      <PostRepostButton currentUser={currentUser!} postData={postData!} />
+      <PostRepostButton postData={postData!} />
       <Button variant={"ghost"} className="rounded-full" size={"icon"}>
         <SendIcon />
       </Button>

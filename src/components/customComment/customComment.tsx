@@ -5,16 +5,15 @@ import InputImage from "../inputImage/inputImage";
 import { IPost, ISession, IUser } from "@/app/types";
 import ImagePreview from "../imagePreview/imagePreview";
 import AvatarCn from "../avatar/avatar";
+import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
 
 interface customCommentProps {
   children?: React.ReactNode;
-  currentUser?: IUser | any;
   postData?: IPost;
 }
 
 export default function CustomComment({
   children,
-  currentUser,
   postData,
 }: customCommentProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,7 +41,6 @@ export default function CustomComment({
           setIsOpen={setIsOpen}
           isOpen={isOpen}
           postData={postData!}
-          session={currentUser}
         />
       </DialogContent>
     </Dialog>
