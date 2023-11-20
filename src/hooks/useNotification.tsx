@@ -7,7 +7,9 @@ import React, { useEffect, useState } from "react";
 const useNotification = () => {
   const [notify, setNotify] = useState([]);
   const getNotification = async () => {
-    const res = await fetch(`http://localhost:3000/api/notification`);
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_DB_HOST}/api/notification`
+    );
     return res.json();
   };
 
