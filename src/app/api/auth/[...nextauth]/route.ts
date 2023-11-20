@@ -102,14 +102,6 @@ export const authOptions: AuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         const u = user as CustomUser;
-        console.log({
-          ...token,
-          username: u.username,
-          image: u.image,
-          id: u.id,
-          bio: u.bio,
-          hashPassword: u.hashPassword,
-        });
 
         return {
           ...token,
@@ -156,10 +148,3 @@ export async function loginIsRequiredServer() {
     redirect("/login");
   }
 }
-
-// export const useLoginPageIsRequiredServer = () => {
-//   const session = useSession();
-//   if (session) {
-//     redirect("/");
-//   }
-// };
