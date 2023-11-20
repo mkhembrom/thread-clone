@@ -33,14 +33,14 @@ export async function POST(request: Request) {
     // const path = join("public", file.name);
     // fs.writeFileSync(path, buffer);
 
-    // const base64 = await fileToBase64(file);
+    const base64 = await fileToBase64(file);
 
-    const uploadedResponse = await cloudinary.uploader.upload(file.name, {
-      folder: "threads",
-      upload_preset: "ml_default",
-      resource_type: "image",
-    });
-    const { secure_url } = uploadedResponse;
+    // const uploadedResponse = await cloudinary.uploader.upload(file.name, {
+    //   folder: "threads",
+    //   upload_preset: "ml_default",
+    //   resource_type: "image",
+    // });
+    // const { secure_url } = uploadedResponse;
 
     const userUpdate = await prisma?.user.create({
       data: <User>{
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
         email: email,
         username: username,
         hashPassword: hashedPassword,
-        image: secure_url,
+        image: base64,
       },
     });
 
