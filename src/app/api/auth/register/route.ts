@@ -5,12 +5,7 @@ import { join } from "path";
 import fs from "fs";
 import { v2 as cloudinary } from "cloudinary";
 import { Socials, User } from "@prisma/client";
-
-// export const config = {
-//   api: {
-//     bodyParser: false,
-//   },
-// };
+import { fileToBase64 } from "@/lib/convertBase64";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -33,12 +28,14 @@ export async function POST(request: Request) {
   }
 
   if (file) {
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    const path = join("public", file.name);
-    fs.writeFileSync(path, buffer);
+    // const bytes = await file.arrayBuffer();
+    // const buffer = Buffer.from(bytes);
+    // const path = join("public", file.name);
+    // fs.writeFileSync(path, buffer);
 
-    const uploadedResponse = await cloudinary.uploader.upload(path, {
+    // const base64 = await fileToBase64(file);
+
+    const uploadedResponse = await cloudinary.uploader.upload(file.name, {
       folder: "threads",
       upload_preset: "ml_default",
       resource_type: "image",
