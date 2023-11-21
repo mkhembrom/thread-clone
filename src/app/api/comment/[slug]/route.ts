@@ -1,15 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prismadb";
 import { File } from "buffer";
-import fs from "fs";
 import { v2 as cloudinary } from "cloudinary";
 import getCurrentUser from "@/components/currentUser/currentUser";
-
-// export const config = {
-//   api: {
-//     bodyParser: false,
-//   },
-// };
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -177,9 +170,6 @@ export async function POST(
         body: `${currentUser?.username} commented on your reply`,
       },
     });
-
-    console.log(notify);
-
     return NextResponse.json({ commentsOfComment, notify });
   }
 }
