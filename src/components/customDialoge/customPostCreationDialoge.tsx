@@ -76,7 +76,7 @@ function CustomPostCreationDialoge({ customBtn }: Props) {
 
     let formData = new FormData();
     formData.append("text", text);
-    let files: (string | ArrayBuffer | null)[] = [];
+    // let files: (string | ArrayBuffer | null)[] = [];
 
     // imageFiles.forEach((image, index) => {
     //   const reader = new FileReader();
@@ -120,9 +120,6 @@ function CustomPostCreationDialoge({ customBtn }: Props) {
       toast
         .promise(
           fetch(`${process.env.NEXT_PUBLIC_DB_HOST}/api/upload/post`, {
-            headers: {
-              "Access-Control-Allow-Origin": "*",
-            },
             method: "POST",
             body: formData,
             cache: "no-cache",
