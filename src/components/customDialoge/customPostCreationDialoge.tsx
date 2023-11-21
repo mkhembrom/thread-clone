@@ -15,6 +15,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import CreateIcon from "../ui/icons/create";
 import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
+import { v2 as cloudinary } from "cloudinary";
 
 interface Props {
   customBtn?: boolean;
@@ -38,12 +39,15 @@ function CustomPostCreationDialoge({ customBtn }: Props) {
 
   const [text, setText] = useState("");
   const [imageDataList, setImageDataList] = useState<ImageData[]>([]);
-
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
   const router = useRouter();
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files;
-    if (!selectedFiles) return;
+    if (selectedFiles) {
+      setImageFiles(Array.from(selectedFiles));
+    }
 
+    if (!selectedFiles) return;
     const newImageDataList: ImageData[] = [];
 
     for (let i = 0; i < selectedFiles.length; i++) {
@@ -72,12 +76,45 @@ function CustomPostCreationDialoge({ customBtn }: Props) {
 
     let formData = new FormData();
     formData.append("text", text);
+    let files: (string | ArrayBuffer | null)[] = [];
+
+    // imageFiles.forEach((image, index) => {
+    //   const reader = new FileReader();
+    //   reader.readAsDataURL(image as unknown as File);
+
+    //   reader.onloadend = async () => {
+    //     const uploadedResponse = await cloudinary.uploader.upload(
+    //       reader.result as string,
+    //       {
+    //         folder: "threads/post",
+    //         upload_preset: "ml_default",
+    //         resource_type: "image",
+    //       }
+    //     );
+
+    //   };
+    // });
+
+    // if (files.length) {
+    //   formData.append("files", JSON.stringify(files));
+    // }
 
     if (imageDataList) {
       imageDataList.forEach((image: ImageData, index: number) => {
         formData.append(`images[${index}]`, image.file);
       });
     }
+
+    // if (imageDataList) {
+    //   imageDataList.forEach((image: ImageData, index: number) => {
+    //     const reader = new FileReader();
+    //     reader.readAsDataURL(image.file as unknown as File);
+
+    //     reader.onloadend = () => {
+    //       formData.append(`images[${index}]`, reader.result as string);
+    //     };
+    //   });
+    // }
     setIsOpen(false);
     try {
       toast

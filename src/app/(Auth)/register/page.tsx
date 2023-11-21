@@ -27,9 +27,7 @@ export default function Register({}: Props) {
     password: "",
   };
   const [user, setUser] = useState<User>(initialUser);
-  const [selectedFile, setSelectedFile] = useState<File | null | undefined>(
-    null
-  );
+  const [selectedFile, setSelectedFile] = useState("");
   const [image, setImage] = useState<string | undefined>("");
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file: File | undefined = e.target?.files?.[0];
@@ -37,12 +35,17 @@ export default function Register({}: Props) {
       ? URL.createObjectURL(file)
       : undefined;
     setImage(preview);
-    setSelectedFile(file);
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file as unknown as File);
+    reader.onloadend = () => {
+      setSelectedFile(reader.result as string);
+    };
   };
 
   const handleRemoveImage = () => {
     setImage("");
-    setSelectedFile(null);
+    setSelectedFile("");
   };
 
   const [loading, setLoading] = useState(false);

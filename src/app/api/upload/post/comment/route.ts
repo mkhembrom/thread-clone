@@ -42,17 +42,37 @@ export async function POST(request: Request) {
   } else {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    fs.writeFileSync(`public/${file.name}`, buffer);
+    // fs.writeFileSync(`public/${file.name}`, buffer);
 
-    const uploadedResponse = await cloudinary.uploader.upload(
-      `public/${file.name}`,
-      {
-        folder: "threads/comment",
-        upload_preset: "ml_default",
-        resource_type: "image",
-      }
-    );
-    const { secure_url, original_filename } = uploadedResponse;
+    // const uploadedResponse = await cloudinary.uploader.upload(
+    //   `public/${file.name}`,
+    //   {
+    //     folder: "threads/comment",
+    //     upload_preset: "ml_default",
+    //     resource_type: "image",
+    //   }
+    // );
+    const result = await new Promise<any>((resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream(
+          {
+            folder: "threads/comment",
+            upload_preset: "ml_default",
+            resource_type: "image",
+          },
+          (error, result) => {
+            if (error) {
+              console.error(error);
+              reject(new Error("Error uploading to Cloudinary"));
+            } else {
+              console.log(result);
+              resolve(result);
+            }
+          }
+        )
+        .end(buffer);
+    });
+    const { secure_url, original_filename } = result;
 
     const comment = await prisma?.comment.create({
       data: {

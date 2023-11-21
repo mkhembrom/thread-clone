@@ -4,12 +4,7 @@ import { v2 as cloudinary } from "cloudinary";
 import getCurrentUser from "@/components/currentUser/currentUser";
 import { File } from "buffer";
 import fs from "fs";
-
-// export const config = {
-//   api: {
-//     bodyParser: false,
-//   },
-// };
+import { uploadToCloudinary } from "@/lib/uploadToCloudinary";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -22,6 +17,7 @@ export async function POST(request: Request) {
   const formData = await request.formData();
   const text = formData.get("text");
   const files = [];
+
   for (let [key, value] of Array.from(formData.entries())) {
     if (value instanceof File) {
       files.push(value);
@@ -41,28 +37,62 @@ export async function POST(request: Request) {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    fs.writeFileSync(`public/${file.name}`, buffer);
 
-    const uploadedResponse = await cloudinary.uploader.upload(
-      `public/${file.name}`,
-      {
-        folder: "threads/post",
-        upload_preset: "ml_default",
-        resource_type: "image",
-      }
-    );
+    const result = await new Promise<any>((resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream(
+          {
+            folder: "threads/post",
+            upload_preset: "ml_default",
+            resource_type: "image",
+          },
+          (error, result) => {
+            if (error) {
+              console.error(error);
+              reject(new Error("Error uploading to Cloudinary"));
+            } else {
+              console.log(result);
+              resolve(result);
+            }
+          }
+        )
+        .end(buffer);
+    });
 
-    const { secure_url, original_filename } = uploadedResponse;
+    // Handle the result
+    const { secure_url, original_filename } = result;
     if (newPost) {
-      await prisma?.image.create({
+      await prisma.image.create({
         data: {
           postId: newPost.id,
-
           imageUrl: secure_url,
           imageName: original_filename,
         },
       });
     }
+    // const buffer = Buffer.from(await file.arrayBuffer());
+    // fs.writeFileSync(`public/${file.name}`, buffer);
+
+    // const uploadedResponse = await cloudinary.uploader.upload(
+    //   `public/${file.name}`,
+    //   {
+    //     folder: "threads/post",
+    //     upload_preset: "ml_default",
+    //     resource_type: "image",
+    //   }
+    // );
+
+    // const { secure_url, original_filename } = uploadedResponse;
+    // if (newPost) {
+    //   await prisma?.image.create({
+    //     data: {
+    //       postId: newPost.id,
+
+    //       imageUrl: secure_url,
+    //       imageName: original_filename,
+    //     },
+    //   });
+    // }
   }
 
   return NextResponse.json({ message: "success" });
