@@ -3,8 +3,6 @@ import prisma from "@/lib/prismadb";
 import { v2 as cloudinary } from "cloudinary";
 import getCurrentUser from "@/components/currentUser/currentUser";
 import { File } from "buffer";
-import fs from "fs";
-import { uploadToCloudinary } from "@/lib/uploadToCloudinary";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -48,10 +46,8 @@ export async function POST(request: Request) {
           },
           (error, result) => {
             if (error) {
-              console.error(error);
               reject(new Error("Error uploading to Cloudinary"));
             } else {
-              console.log(result);
               resolve(result);
             }
           }
@@ -64,7 +60,7 @@ export async function POST(request: Request) {
     if (newPost) {
       await prisma.image.create({
         data: {
-          postId: newPost.id,
+          postId: newPost?.id,
           imageUrl: secure_url,
           imageName: original_filename,
         },
