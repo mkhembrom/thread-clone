@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prismadb";
-import { v2 as cloudinary } from "cloudinary";
+import { UploadApiResponse, v2 as cloudinary } from "cloudinary";
 import getCurrentUser from "@/components/currentUser/currentUser";
 import { File } from "buffer";
 
@@ -36,36 +36,37 @@ export async function POST(request: Request) {
 
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    const result = await new Promise<any>((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream(
-          {
-            folder: "threads/post",
-            upload_preset: "ml_default",
-            resource_type: "image",
-          },
-          (error, result) => {
-            if (error) {
-              reject(new Error("Error uploading to Cloudinary"));
-            } else {
-              resolve(result);
-            }
+    // const result = await new Promise<any>((resolve, reject) => {
+
+    cloudinary.uploader
+      .upload_stream(
+        {
+          folder: "threads/post",
+          upload_preset: "ml_default",
+          resource_type: "image",
+        },
+        async (error, result: UploadApiResponse | any) => {
+          if (error) {
+            throw new Error("Failed to update image");
+          } else {
+            const { secure_url, original_filename } = result;
+
+            await prisma.image.create({
+              data: {
+                postId: newPost?.id,
+                imageUrl: secure_url,
+                imageName: original_filename,
+              },
+            });
           }
-        )
-        .end(buffer);
-    });
+        }
+      )
+      .end(buffer);
+
+    // });
 
     // Handle the result
-    const { secure_url, original_filename } = result;
-    if (newPost) {
-      await prisma.image.create({
-        data: {
-          postId: newPost?.id,
-          imageUrl: secure_url,
-          imageName: original_filename,
-        },
-      });
-    }
+
     // const buffer = Buffer.from(await file.arrayBuffer());
     // fs.writeFileSync(`public/${file.name}`, buffer);
 
