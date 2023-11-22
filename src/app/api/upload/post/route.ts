@@ -38,30 +38,32 @@ export async function POST(request: Request) {
 
     // const result = await new Promise<any>((resolve, reject) => {
 
-    cloudinary.uploader
-      .upload_stream(
-        {
-          folder: "threads/post",
-          upload_preset: "ml_default",
-          resource_type: "image",
-        },
-        async (error, result: UploadApiResponse | any) => {
-          if (error) {
-            throw new Error("Failed to update image");
-          } else {
-            const { secure_url, original_filename } = result;
+    if (newPost) {
+      cloudinary.uploader
+        .upload_stream(
+          {
+            folder: "threads/post",
+            upload_preset: "ml_default",
+            resource_type: "image",
+          },
+          async (error, result) => {
+            if (error) {
+              throw new Error("Failed to update image");
+            } else {
+              // const { secure_url, original_filename } = result;
 
-            await prisma.image.create({
-              data: {
-                postId: newPost?.id,
-                imageUrl: secure_url,
-                imageName: original_filename,
-              },
-            });
+              await prisma.image.create({
+                data: {
+                  postId: newPost?.id,
+                  imageUrl: result?.secure_url,
+                  imageName: result?.original_filename,
+                },
+              });
+            }
           }
-        }
-      )
-      .end(buffer);
+        )
+        .end(buffer);
+    }
 
     // });
 
