@@ -11,8 +11,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export const create = async (formData: FormData) => {
-  "use server";
+export async function create(formData: FormData) {
   const content = formData.get("content");
   const currentUser = await getCurrentUser();
   const files: (FormDataEntryValue & Blob)[] = [];
@@ -72,4 +71,4 @@ export const create = async (formData: FormData) => {
     }
   }
   revalidatePath("/");
-};
+}
