@@ -12,7 +12,7 @@ export default async function PostCreation({}: Props) {
     <div className={`flex items-center border-b border-zinc-800`}>
       <AvatarCn source={session?.image!} />
 
-      <CustomPostCreationDialoge />
+      <CustomPostCreationDialoge currentUser={session} />
 
       <Button
         variant={"outline"}

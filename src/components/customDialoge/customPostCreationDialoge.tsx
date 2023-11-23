@@ -16,11 +16,12 @@ import { useRouter } from "next/navigation";
 import CreateIcon from "../ui/icons/create";
 import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { IImage, IPost } from "@/app/types";
-import { Readable } from "stream";
+import { IImage, IPost, IUser } from "@/app/types";
 import { create } from "@/actions/acttion";
+
 interface Props {
   customBtn?: boolean;
+  currentUser: IUser | any;
 }
 
 interface ImageData {
@@ -29,8 +30,7 @@ interface ImageData {
   preview: string;
 }
 
-function CustomPostCreationDialoge({ customBtn }: Props) {
-  const { user } = useCurrentUserForClient();
+function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
   const { register, handleSubmit } = useForm<IPost>();
 
   const [isClient, setIsClient] = useState(false);
@@ -132,7 +132,7 @@ function CustomPostCreationDialoge({ customBtn }: Props) {
           >
             <DialogHeader className="flex flex-row items-start space-x-2 w-full">
               <div className="mt-2">
-                <AvatarCn source={user?.image!} />
+                <AvatarCn source={currentUser?.image!} />
               </div>
               <form
                 // onSubmit={handleSubmit(onSubmit)}
@@ -140,7 +140,7 @@ function CustomPostCreationDialoge({ customBtn }: Props) {
                 encType="multipart/form-data"
                 className={`w-full flex flex-col items-start justify-start`}
               >
-                <h1>{user?.name}</h1>
+                <h1>{currentUser?.name}</h1>
                 <textarea
                   // {...register("content")}
                   name="content"

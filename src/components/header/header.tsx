@@ -76,7 +76,7 @@ export default async function Header({ backArrow }: Props) {
             <CustomLink linkName="/search">
               <SearchIcon />
             </CustomLink>
-            <CustomPostCreationDialoge customBtn />
+            <CustomPostCreationDialoge customBtn currentUser={currentUser!} />
 
             <CustomLink linkName="/notification">
               <HeartIconOne />
