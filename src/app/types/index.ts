@@ -77,7 +77,7 @@ export interface ILike {
   user: IUser;
 }
 
-export interface IImage {
+export interface IImage extends Blob {
   id: string;
   imageName: string;
   imageUrl: string;

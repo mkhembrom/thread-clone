@@ -1,8 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prismadb";
 import { UploadApiResponse, v2 as cloudinary } from "cloudinary";
-import getCurrentUser from "@/components/currentUser/currentUser";
 import { File } from "buffer";
+import { ICloudinary, IPost } from "@/app/types";
+import getCurrentUser from "@/components/currentUser/currentUser";
+import { Image, Post } from "@prisma/client";
+import { resolve } from "path";
+import toast from "react-hot-toast";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -11,21 +15,20 @@ cloudinary.config({
 });
 
 export async function POST(request: Request) {
-  const session = await getCurrentUser();
   const formData = await request.formData();
-  const text = formData.get("text");
-  const files = [];
-
-  for (let [key, value] of Array.from(formData.entries())) {
-    if (value instanceof File) {
+  const content = formData.get("content");
+  const currentUser = await getCurrentUser();
+  const files: (FormDataEntryValue & Blob)[] = [];
+  for (let [, value] of Array.from(formData.entries())) {
+    if (value instanceof Blob) {
       files.push(value);
     }
   }
 
-  const newPost = await prisma?.post.create({
-    data: {
-      content: `${text}`,
-      userId: `${session?.id}`,
+  const post = await prisma.post.create({
+    data: <Post>{
+      userId: currentUser?.id,
+      content: content,
     },
   });
 
@@ -33,66 +36,53 @@ export async function POST(request: Request) {
     if (!file) {
       throw new Error("No file uploaded");
     }
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = new Uint8Array(arrayBuffer);
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-
-    // const result = await new Promise<any>((resolve, reject) => {
-
-    if (newPost) {
-      cloudinary.uploader
-        .upload_stream(
-          {
-            folder: "threads/post",
-            upload_preset: "ml_default",
-            resource_type: "image",
-          },
-          async (error, result) => {
-            if (error) {
-              throw new Error("Failed to update image");
-            } else {
-              // const { secure_url, original_filename } = result;
-
-              await prisma.image.create({
-                data: {
-                  postId: newPost?.id,
-                  imageUrl: result?.secure_url,
-                  imageName: result?.original_filename,
-                },
-              });
+    const resultData = await new Promise<UploadApiResponse | undefined>(
+      (resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream(
+            {
+              folder: "threads/post",
+              upload_preset: "ml_default",
+              resource_type: "image",
+            },
+            (error, result) => {
+              if (error) {
+                reject(error);
+              } else {
+                resolve(result);
+              }
             }
-          }
-        )
-        .end(buffer);
+          )
+          .end(buffer);
+      }
+    );
+    if (resultData) {
+      const { secure_url, original_filename } = resultData;
+
+      const Image = await prisma.image.createMany({
+        data: <Image>{
+          postId: post.id,
+          imageUrl: secure_url,
+          imageName: original_filename,
+        },
+      });
+
+      if (Image) {
+        toast.success("Posted", {
+          style: {
+            borderRadius: "8px",
+            padding: "12px",
+            width: "250px",
+            backgroundColor: "black",
+            color: "white",
+          },
+        });
+      }
     }
-
-    // });
-
-    // Handle the result
-
-    // const buffer = Buffer.from(await file.arrayBuffer());
-    // fs.writeFileSync(`public/${file.name}`, buffer);
-
-    // const uploadedResponse = await cloudinary.uploader.upload(
-    //   `public/${file.name}`,
-    //   {
-    //     folder: "threads/post",
-    //     upload_preset: "ml_default",
-    //     resource_type: "image",
-    //   }
-    // );
-
-    // const { secure_url, original_filename } = uploadedResponse;
-    // if (newPost) {
-    //   await prisma?.image.create({
-    //     data: {
-    //       postId: newPost.id,
-
-    //       imageUrl: secure_url,
-    //       imageName: original_filename,
-    //     },
-    //   });
-    // }
   }
 
-  return NextResponse.json({ message: "success" });
+  return NextResponse.json({ content, message: "success" });
 }
