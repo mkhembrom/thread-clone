@@ -1,6 +1,5 @@
 import getCurrentUser from "@/components/currentUser/currentUser";
-import { redirect } from "next/navigation";
-import { loginIsRequiredServer } from "../api/auth/[...nextauth]/route";
+import { loginIsRequiredServer } from "@/lib/isLoginUser";
 
 type Props = {
   children: React.ReactNode;

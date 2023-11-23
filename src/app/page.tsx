@@ -1,7 +1,6 @@
 import PostCreation from "@/components/postCreation/postCreation";
 import PostList from "@/components/postList/postList";
-
-import { loginIsRequiredServer } from "./api/auth/[...nextauth]/route";
+import { loginIsRequiredServer } from "@/lib/isLoginUser";
 
 export default async function Home() {
   await loginIsRequiredServer();

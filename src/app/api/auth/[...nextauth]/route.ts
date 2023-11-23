@@ -1,8 +1,4 @@
-import NextAuth, {
-  AuthOptions,
-  ISODateString,
-  getServerSession,
-} from "next-auth";
+import NextAuth, { AuthOptions, ISODateString } from "next-auth";
 import bcrypt from "bcrypt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
@@ -10,7 +6,6 @@ import prisma from "@/lib/prismadb";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import InstagramProvider from "next-auth/providers/instagram";
-import { redirect } from "next/navigation";
 import { Prisma } from "@prisma/client";
 
 export type CustomUserSession = {
@@ -141,10 +136,3 @@ export const authOptions: AuthOptions = {
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
-
-export async function loginIsRequiredServer() {
-  const session = await getServerSession(authOptions);
-  if (!session) {
-    redirect("/login");
-  }
-}

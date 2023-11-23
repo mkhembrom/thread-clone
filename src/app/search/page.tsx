@@ -1,10 +1,10 @@
 import React from "react";
-import { loginIsRequiredServer } from "../api/auth/[...nextauth]/route";
 import SearchInput from "@/components/searchInput/searchInput";
 import UsersProfile from "@/components/usersProfile/usersProfile";
 import { IUser } from "../types";
 import getCurrentUser from "@/components/currentUser/currentUser";
 import prisma from "@/lib/prismadb";
+import { loginIsRequiredServer } from "@/lib/isLoginUser";
 type Props = {};
 
 export default async function page({}: Props) {

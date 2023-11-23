@@ -12,9 +12,7 @@ import Image from "next/image";
 import CrossIcon from "../ui/icons/cross";
 import AvatarCn from "../avatar/avatar";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
 import CreateIcon from "../ui/icons/create";
-import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { IImage, IPost, IUser } from "@/app/types";
 import { create } from "@/actions/acttion";
@@ -137,7 +135,6 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
               <form
                 // onSubmit={handleSubmit(onSubmit)}
                 action={create}
-                encType="multipart/form-data"
                 className={`w-full flex flex-col items-start justify-start`}
               >
                 <h1>{currentUser?.name}</h1>

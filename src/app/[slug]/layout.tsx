@@ -4,13 +4,13 @@ import { FaXTwitter } from "react-icons/fa6";
 import Tabs from "@/components/tabs/tabs";
 import getCurrentUser from "@/components/currentUser/currentUser";
 import AvatarCn from "@/components/avatar/avatar";
-import { loginIsRequiredServer } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { IUser } from "../types";
 import { Button } from "@/components/ui/button";
 import FollowButton from "@/components/followButton/followButton";
 import EditProfileButton from "@/components/editProfileButton/editProfileButton";
+import { loginIsRequiredServer } from "@/lib/isLoginUser";
 
 type Props = {
   children: ReactNode;

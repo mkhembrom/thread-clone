@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
-import { loginIsRequiredServer } from "../api/auth/[...nextauth]/route";
 import Notification from "@/components/notification/notification";
+import { loginIsRequiredServer } from "@/lib/isLoginUser";
 type Props = {};
 
 export default async function page({}: Props) {

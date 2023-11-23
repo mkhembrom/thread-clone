@@ -1,7 +1,7 @@
 import { IPost } from "@/app/types";
 import Post from "@/components/post/post";
+import { loginIsRequiredServer } from "@/lib/isLoginUser";
 import React from "react";
-import { loginIsRequiredServer } from "../api/auth/[...nextauth]/route";
 
 async function getProfile(slug: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_DB_HOST}/api/${slug}`, {

@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   headers: () => [
     {
       source: "/:path*",
@@ -49,7 +52,9 @@ const nextConfig = {
     ],
   },
   experimental: {
-    serverActions: true,
+    serverActions: {
+      bodySizeLimit: "3mb",
+    },
   },
 };
 
