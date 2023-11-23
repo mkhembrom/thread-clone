@@ -21,7 +21,7 @@ import { create } from "@/actions/acttion";
 
 interface Props {
   customBtn?: boolean;
-  currentUser: IUser | any;
+  currentUser?: IUser | any;
 }
 
 interface ImageData {
