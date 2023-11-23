@@ -14,7 +14,7 @@ interface footerProps {
   image: string;
 }
 
-export default async function Footer({ username, image }: footerProps) {
+export default async function Footer({}: footerProps) {
   const session = await getCurrentUser();
   return (
     <div
