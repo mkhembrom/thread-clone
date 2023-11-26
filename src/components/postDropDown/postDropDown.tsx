@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,30 +13,31 @@ import getCurrentUser from "../currentUser/currentUser";
 import prisma from "@/lib/prismadb";
 import DeletePost from "../deletePost/deletePost";
 import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
+import CustomAlertDialoge from "../customAlert/customAlertDialoge";
+import ThreeDotsIcon from "../ui/icons/threeDots";
+import { IUser } from "@/app/types";
 
 interface postDropDownProps {
-  children: React.ReactNode;
+  currentUser?: IUser | any;
   postId?: string;
   userId?: string;
 }
 
 export default function PostDropDown({
-  children,
   postId,
   userId,
+  currentUser,
 }: postDropDownProps) {
-  const { user } = useCurrentUserForClient();
+  const [isClient, setIsClient] = useState(false);
 
-  // const postUserId = prisma?.post.findUnique({
-  //   where: {
-  //     id: postId,
-  //     // userId: session?.id,
-  //   },
-  // });
-
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>{children}</DropdownMenuTrigger>
+      <DropdownMenuTrigger>
+        <ThreeDotsIcon />
+      </DropdownMenuTrigger>
       <DropdownMenuContent className={`dark:bg-zinc-900 rounded-xl`}>
         <DropdownMenuLabel className="cursor-pointer p-2">
           <Button variant={"dropicon"} size={"dropicon"} className={``}>
@@ -44,11 +45,11 @@ export default function PostDropDown({
           </Button>
         </DropdownMenuLabel>
 
-        {`${user?.id}` === `${userId}` && (
+        {`${currentUser?.id}` === `${userId}` && isClient && (
           <div>
             <DropdownMenuSeparator className={`$ bottom-1`} />
             <DropdownMenuLabel className="cursor-pointer p-2 w-full">
-              <DeletePost postId={postId} />
+              <CustomAlertDialoge postId={postId} />
             </DropdownMenuLabel>
           </div>
         )}

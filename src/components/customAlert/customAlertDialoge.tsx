@@ -90,32 +90,34 @@ export default function CustomAlertDialoge({
   };
 
   return (
-    <AlertDialog onOpenChange={setIsOpen} open={isOpen}>
-      <AlertDialogTrigger className="text-red-500 w-full text-left">
-        Delete
-      </AlertDialogTrigger>
-      <AlertDialogContent className="w-1/2 rounded-3xl dark:bg-zinc-800">
-        <AlertDialogHeader className="flex flex-col items-center">
-          <AlertDialogTitle className="">Are you sure?</AlertDialogTitle>
-          <AlertDialogDescription className="flex space-x-2 justify-evenly items-center pt-4">
-            <AlertDialogCancel className="dark:bg-white hover:dark:bg-zinc-300 dark:text-black">
-              Cancel
-            </AlertDialogCancel>
-            <div className="h-6 w-[1px] bg-white"></div>
-            <AlertDialogAction
-              onClick={
-                postId
-                  ? handleDeletePost
-                  : commentId
-                  ? handleDeleteComment
-                  : () => {}
-              }
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-      </AlertDialogContent>
-    </AlertDialog>
+    <>
+      <AlertDialog onOpenChange={setIsOpen} open={isOpen}>
+        <AlertDialogTrigger className="text-red-500 w-full text-left">
+          Delete
+        </AlertDialogTrigger>
+        <AlertDialogContent className="w-1/2 rounded-3xl dark:bg-zinc-800">
+          <AlertDialogHeader className="flex flex-col items-center">
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription className="flex space-x-2 justify-evenly items-center pt-4">
+              <AlertDialogCancel className="dark:bg-white hover:dark:bg-zinc-300 dark:text-black">
+                Cancel
+              </AlertDialogCancel>
+              <div className="h-6 w-[1px] bg-white"></div>
+              <AlertDialogAction
+                onClick={
+                  postId
+                    ? handleDeletePost
+                    : commentId
+                    ? handleDeleteComment
+                    : () => null
+                }
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }

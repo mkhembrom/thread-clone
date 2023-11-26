@@ -12,13 +12,8 @@ interface deletePostProps {
 
 export default function DeletePost({ postId, commentId }: deletePostProps) {
   return (
-    <Button
-      asChild
-      variant={"dropicon"}
-      size={"dropicon"}
-      className={`text-red-500 font-bold w-full`}
-    >
+    <div>
       <CustomAlertDialoge postId={postId} commentId={commentId} />
-    </Button>
+    </div>
   );
 }

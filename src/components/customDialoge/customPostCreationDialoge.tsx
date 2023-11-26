@@ -15,7 +15,10 @@ import toast from "react-hot-toast";
 import CreateIcon from "../ui/icons/create";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { IImage, IPost, IUser } from "@/app/types";
-import { create } from "@/actions/acttion";
+import { create } from "@/actions/action";
+import { useRouter } from "next/navigation";
+import image from "next/image";
+import router from "next/router";
 
 interface Props {
   customBtn?: boolean;
@@ -29,70 +32,104 @@ interface ImageData {
 }
 
 function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
-  const { register, handleSubmit } = useForm<IPost>();
-
+  // const { register, handleSubmit } = useForm();
+  const router = useRouter();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
   const [isOpen, setIsOpen] = useState(false);
-  const [imageList, setImageList] = useState<ImageData[]>([]);
+  // const [imageList, setImageList] = useState<ImageData[]>([]);
+  const [file, setFile] = useState<File | null>(null);
+  const [display, setDisplay] = useState<string>("");
+  const [content, setContent] = useState("");
   // const onSubmit: SubmitHandler<IPost> = (data) => console.log(data);
 
-  const onSubmit: SubmitHandler<IPost> = async (data: IPost) => {
-    const { content, image } = data;
-    try {
-      const formData = new FormData();
-      formData.append("content", content);
+  // const onSubmit = async (data: { content: any; image: any }) => {
+  //   const { content, image } = data;
+  //   console.log(data);
+  //   try {
+  //     const formData = new FormData();
+  //     formData.append("content", content);
 
-      for (let i = 0; i < image.length; i++) {
-        formData.append(`image_${i}`, image[i]);
-      }
+  //     for (let i = 0; i < image.length; i++) {
+  //       formData.append(`image_${i}`, image[i]);
+  //     }
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DB_HOST}/api/upload/post`,
-        {
-          method: "POST",
-          body: formData,
-          cache: "no-cache",
-        }
-      );
+  //     const response = await fetch(
+  //       `${process.env.NEXT_PUBLIC_DB_HOST}/api/upload/post`,
+  //       {
+  //         method: "POST",
+  //         body: formData,
+  //         cache: "no-cache",
+  //       }
+  //     );
 
-      const data = await response.json();
+  //     const data = await response.json();
 
-      console.log("Post created:", data);
-    } catch (error) {
-      console.error("Error creating post:", error);
+  //     console.log("Post created:", data);
+
+  //     if (data) {
+  //       router.refresh();
+  //     }
+  //   } catch (error) {
+  //     console.error("Error creating post:", error);
+  //   }
+  // };
+
+  const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append("content", content);
+    if (file) {
+      formData.set("image", file as unknown as File);
     }
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_DB_HOST}/api/upload/post`,
+      {
+        method: "POST",
+        body: formData,
+        cache: "no-cache",
+      }
+    );
+
+    const data = await response.json();
   };
 
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles: FileList | null = e.target.files;
+    const selectedFiles = e.target.files;
 
     if (!selectedFiles) return;
 
-    const newImageDataList: ImageData[] = [];
-    for (let i = 0; i < selectedFiles.length; i++) {
-      const file = selectedFiles[i];
-
-      if (file.type.startsWith("image/")) {
-        const preview = URL.createObjectURL(file);
-        newImageDataList.push({ id: i, file, preview });
-      }
+    if (selectedFiles && selectedFiles.length > 0) {
+      const imageFile = selectedFiles[0];
+      const preview = URL.createObjectURL(imageFile);
+      setDisplay(preview);
+      setFile(imageFile);
     }
-    setImageList([...newImageDataList]);
+
+    // const newImageDataList: ImageData[] = [];
+    // for (let i = 0; i < selectedFiles.length; i++) {
+    //   const file = selectedFiles[i];
+
+    //   if (file.type.startsWith("image/")) {
+    //     const preview = URL.createObjectURL(file);
+    //     newImageDataList.push({ id: i, file, preview });
+    //   }
+    // }
+    // setImageList([...newImageDataList]);
   };
 
-  const handleRemoveImage = (id: number) => {
-    const newImageDataList = [...imageList];
-    const updatedData = newImageDataList.filter((item) => item.id !== id);
-    setImageList(updatedData);
+  const handleRemoveImage = () => {
+    setDisplay("");
+    setFile(null);
   };
 
   const clearData = () => {
     setIsOpen(false);
-    setImageList([]);
+    setFile(null);
+    setDisplay("");
 
     toast.success("Posted", {
       style: {
@@ -104,6 +141,7 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
       },
     });
   };
+
   return (
     <>
       {isClient && (
@@ -133,52 +171,46 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
                 <AvatarCn source={currentUser?.image!} />
               </div>
               <form
-                // onSubmit={handleSubmit(onSubmit)}
+                // onSubmit={handleSubmit}
                 action={create}
                 className={`w-full flex flex-col items-start justify-start`}
               >
                 <h1>{currentUser?.name}</h1>
                 <textarea
-                  // {...register("content")}
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
                   name="content"
                   placeholder="Start a thread..."
                   className={`w-full resize-none overflow-hidden bg-transparent border-none outline-none dark:text-zinc-300 text-zinc-600`}
                 ></textarea>
                 <input
-                  // {...register("image")}
                   name="image"
                   accept="image/*"
                   type="file"
                   id="imageFile"
                   className="hidden"
                   onChange={handleImage}
-                  multiple
                 />
 
-                {imageList && (
+                {display && (
                   <div className="flex flex-wrap items-center justify-start w-full">
-                    {imageList.map((img, index) => (
-                      <div
-                        key={index}
-                        className="w-32 h-full relative pr-2 pb-2"
+                    <div className="w-32 h-full relative pr-2 pb-2">
+                      <Image
+                        className="rounded-lg w-full"
+                        src={display}
+                        width={300}
+                        height={400}
+                        alt={"upload Image"}
+                      />
+                      <Button
+                        onClick={() => handleRemoveImage()}
+                        variant={"ghost"}
+                        size={"icon"}
+                        className="absolute top-2 right-2 rounded-full text-white w-8 h-8 backdrop-blur-md"
                       >
-                        <Image
-                          className="rounded-lg w-full"
-                          src={img.preview}
-                          width={300}
-                          height={400}
-                          alt={"upload Image"}
-                        />
-                        <Button
-                          onClick={() => handleRemoveImage(img.id)}
-                          variant={"ghost"}
-                          size={"icon"}
-                          className="absolute top-2 right-2 rounded-full text-white w-8 h-8 backdrop-blur-md"
-                        >
-                          <CrossIcon />
-                        </Button>
-                      </div>
-                    ))}
+                        <CrossIcon />
+                      </Button>
+                    </div>
                   </div>
                 )}
                 <label

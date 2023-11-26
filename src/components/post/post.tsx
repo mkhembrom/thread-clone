@@ -12,13 +12,16 @@ import PostButtons from "../postButtons/postButtons";
 import { formatTimeAgo } from "@/lib/timeFormat";
 import ImagePreview from "../imagePreview/imagePreview";
 import AvatarCn from "../avatar/avatar";
+import PostClient from "../postClient/postClient";
 
 interface PostProps {
   post: IPost;
 }
 
 export default async function Post({ post }: PostProps) {
+  const currentUser = await getCurrentUser();
   const formattedDate = formatTimeAgo(`${post?.createdAt}`);
+
   return (
     <div
       className={`w-full flex border-b pb-4 mb-4 dark:border-zinc-600 border-zinc-300 cursor-pointer`}
@@ -54,16 +57,11 @@ export default async function Post({ post }: PostProps) {
               <p className="text-zinc-600 dark:text-zinc-400 text-sm ">
                 {formattedDate}
               </p>
-              <Button
-                asChild
-                className="hover:bg-zinc-400 dark:hover:bg-zinc-300 text-zinc-600 dark:text-zinc-200 rounded-full focus:outline-none"
-                variant={"ghost"}
-                size={"icon"}
-              >
-                <PostDropDown postId={post?.id} userId={post?.userId}>
-                  <ThreeDotsIcon />
-                </PostDropDown>
-              </Button>
+              <PostDropDown
+                postId={post.id}
+                userId={post.userId}
+                currentUser={currentUser}
+              />
             </div>
           </div>
           <p className={`text-sm pt-1 pb-4`}>{post?.content}</p>
