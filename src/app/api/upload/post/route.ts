@@ -87,12 +87,6 @@ export async function POST(request: NextRequest) {
   const content = formData.get("content");
   const currentUser = await getCurrentUser();
   const file: File | null = formData.get("image") as unknown as File;
-  // const files = [];
-  // for (let [, value] of Array.from(formData.entries())) {
-  //   if (value instanceof File) {
-  //     files.push(value);
-  //   }
-  // }
 
   if (!file) {
     return NextResponse.json({ success: false });
@@ -104,6 +98,8 @@ export async function POST(request: NextRequest) {
     },
   });
 
+  console.log(file);
+  console.log(Array.from(formData.entries()));
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
 
@@ -128,16 +124,15 @@ export async function POST(request: NextRequest) {
     }
   );
 
-  if (resultData) {
-    const { secure_url, original_filename } = resultData;
+  const Image = await prisma.image.createMany({
+    data: <Image>{
+      postId: post.id,
+      imageUrl: resultData?.secure_url,
+      imageName: resultData?.original_filename,
+    },
+  });
 
-    const Image = await prisma.image.createMany({
-      data: <Image>{
-        postId: post.id,
-        imageUrl: secure_url,
-        imageName: original_filename,
-      },
-    });
+  if (Image) {
     return NextResponse.json({ content, message: "success" });
   }
 }

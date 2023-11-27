@@ -89,6 +89,8 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
       formData.append("content", content);
       formData.set("image", file);
 
+      console.log(file);
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_DB_HOST}/api/upload/post`,
         {
@@ -99,10 +101,11 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
       );
 
       const data = await response.json();
-
-      console.log(data);
-    } catch (error) {
-      console.log("error", error);
+      if (data) {
+        router.refresh();
+      }
+    } catch (e: any) {
+      console.log("error", e);
     } finally {
       clearData();
     }
@@ -139,18 +142,7 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
 
   const clearData = () => {
     setIsOpen(false);
-    setFile(null);
-    setDisplay("");
-
-    toast.success("Posted", {
-      style: {
-        borderRadius: "8px",
-        padding: "12px",
-        width: "250px",
-        backgroundColor: "black",
-        color: "white",
-      },
-    });
+    handleRemoveImage();
   };
 
   return (
