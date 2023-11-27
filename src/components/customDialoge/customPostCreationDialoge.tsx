@@ -25,12 +25,6 @@ interface Props {
   currentUser?: IUser | any;
 }
 
-interface ImageData {
-  id: number;
-  file: File;
-  preview: string;
-}
-
 function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
   // const { register, handleSubmit } = useForm();
   const router = useRouter();
@@ -41,8 +35,8 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
   }, []);
   const [isOpen, setIsOpen] = useState(false);
   // const [imageList, setImageList] = useState<ImageData[]>([]);
-  const [file, setFile] = useState<File | null>(null);
-  const [display, setDisplay] = useState<string>("");
+  const [file, setFile] = useState<string>("");
+  const [display, setDisplay] = useState<string | undefined>("");
   const [content, setContent] = useState("");
   // const onSubmit: SubmitHandler<IPost> = (data) => console.log(data);
 
@@ -82,14 +76,10 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
     e.preventDefault();
     if (!file) return;
 
-    console.log("working");
-
     try {
       const formData = new FormData();
       formData.append("content", content);
       formData.set("image", file);
-
-      console.log(file);
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_DB_HOST}/api/upload/post`,
@@ -112,16 +102,33 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
   };
 
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = e?.target?.files;
+    const file: File | undefined = e.target?.files?.[0];
+    const preview: string | undefined = file
+      ? URL.createObjectURL(file)
+      : undefined;
+    setDisplay(preview as string);
 
-    if (!selectedFiles) return;
+    const reader = new FileReader();
+    reader.readAsDataURL(file as unknown as File);
+    reader.onloadend = () => {
+      setFile(reader.result as string);
+    };
+    // const selectedFiles = e?.target?.files;
 
-    if (selectedFiles && selectedFiles.length > 0) {
-      const imageFile = selectedFiles[0];
-      const preview = URL.createObjectURL(imageFile);
-      setDisplay(preview);
-      setFile(imageFile);
-    }
+    // if (!selectedFiles) return;
+
+    // if (selectedFiles && selectedFiles.length > 0) {
+    //   const imageFile = selectedFiles[0];
+    //   const preview = URL.createObjectURL(imageFile);
+    //   setDisplay(preview);
+    //   // setFile(imageFile);
+    // }
+
+    // const reader = new FileReader();
+    // reader.readAsDataURL(selectedFiles[0] as unknown as File);
+    // reader.onloadend = () => {
+    //   setFile(reader.result as string);
+    // };
 
     // const newImageDataList: ImageData[] = [];
     // for (let i = 0; i < selectedFiles.length; i++) {
@@ -137,7 +144,7 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
 
   const handleRemoveImage = () => {
     setDisplay("");
-    setFile(null);
+    setFile("");
   };
 
   const clearData = () => {

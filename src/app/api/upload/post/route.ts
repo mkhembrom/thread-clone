@@ -84,9 +84,9 @@ export async function POST(request: NextRequest) {
   //   }
   // }
 
-  const content = formData.get("content");
   const currentUser = await getCurrentUser();
-  const file: File | null = formData.get("image") as unknown as File;
+  const content = formData.get("content");
+  const file = formData.get("image") as string;
 
   if (!file) {
     return NextResponse.json({ success: false });
@@ -98,37 +98,39 @@ export async function POST(request: NextRequest) {
     },
   });
 
-  console.log(file);
-  console.log(Array.from(formData.entries()));
-  const bytes = await file.arrayBuffer();
-  const buffer = Buffer.from(bytes);
+  // const resultData = await new Promise<UploadApiResponse | undefined>(
+  //   (resolve, reject) => {
+  //     cloudinary.uploader
+  //       .upload_stream(
+  //         {
+  //           folder: "threads/post",
+  //           upload_preset: "ml_default",
+  //           resource_type: "image",
+  //         },
+  //         (error, result) => {
+  //           if (error) {
+  //             reject(error);
+  //           } else {
+  //             resolve(result);
+  //           }
+  //         }
+  //       )
+  //       .end(buffer);
+  //   }
+  // );
 
-  const resultData = await new Promise<UploadApiResponse | undefined>(
-    (resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream(
-          {
-            folder: "threads/post",
-            upload_preset: "ml_default",
-            resource_type: "image",
-          },
-          (error, result) => {
-            if (error) {
-              reject(error);
-            } else {
-              resolve(result);
-            }
-          }
-        )
-        .end(buffer);
-    }
-  );
+  const uploadedResponse = await cloudinary.uploader.upload(file, {
+    folder: "threads/post",
+    upload_preset: "ml_default",
+    resource_type: "image",
+  });
+  const { secure_url, original_filename } = uploadedResponse;
 
   const Image = await prisma.image.createMany({
     data: <Image>{
       postId: post.id,
-      imageUrl: resultData?.secure_url,
-      imageName: resultData?.original_filename,
+      imageUrl: secure_url,
+      imageName: original_filename,
     },
   });
 
