@@ -18,34 +18,39 @@ export async function POST(request: NextRequest) {
   const formData = await request.formData();
   const currentUser = await getCurrentUser();
   const content = formData.get("content");
-  const file = formData.get("image") as string;
+  const file = formData.get("image");
 
-  if (!file) {
-    return NextResponse.json({ success: false });
-  }
-  const post = await prisma.post.create({
-    data: <Post>{
-      userId: currentUser?.id,
-      content: content,
-    },
-  });
+  if (file) {
+    const post = await prisma.post.create({
+      data: <Post>{
+        userId: currentUser?.id,
+        content: content,
+      },
+    });
 
-  const uploadedResponse = await cloudinary.uploader.upload(file, {
-    folder: "threads/post",
-    upload_preset: "ml_default",
-    resource_type: "image",
-  });
-  const { secure_url, original_filename } = uploadedResponse;
+    const uploadedResponse = await cloudinary.uploader.upload(file as string, {
+      folder: "threads/post",
+      upload_preset: "ml_default",
+      resource_type: "image",
+    });
+    const { secure_url, original_filename } = uploadedResponse;
 
-  const Image = await prisma.image.createMany({
-    data: <Image>{
-      postId: post.id,
-      imageUrl: secure_url,
-      imageName: original_filename,
-    },
-  });
+    const Image = await prisma.image.createMany({
+      data: <Image>{
+        postId: post.id,
+        imageUrl: secure_url,
+        imageName: original_filename,
+      },
+    });
 
-  if (Image) {
+    return NextResponse.json({ content, message: "success" });
+  } else {
+    const post = await prisma.post.create({
+      data: <Post>{
+        userId: currentUser?.id,
+        content: content,
+      },
+    });
     return NextResponse.json({ content, message: "success" });
   }
 }
