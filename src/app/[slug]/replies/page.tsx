@@ -1,25 +1,10 @@
+import { getReplies } from "@/actions/action";
 import { IComment } from "@/app/types";
 import getCurrentUser from "@/components/currentUser/currentUser";
 import UserReplies from "@/components/userReplies/userReplies";
 import React from "react";
 
 type Props = {};
-
-async function getReplies(username: string) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_DB_HOST}/api/${username}`,
-    {
-      method: "GET",
-      cache: "no-cache",
-    }
-  );
-
-  if (!res.ok) {
-    throw new Error("fetch data failed");
-  }
-
-  return res.json();
-}
 
 export default async function Replies({}: Props) {
   const currentUser = await getCurrentUser();

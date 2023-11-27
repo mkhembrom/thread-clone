@@ -14,7 +14,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const formData = await request.formData();
   // const content = formData.get("content");
   // const currentUser = await getCurrentUser();
@@ -86,9 +86,17 @@ export async function POST(request: Request) {
 
   const content = formData.get("content");
   const currentUser = await getCurrentUser();
-  const file = formData.get("image") as unknown as Blob;
+  const file: File | null = formData.get("image") as unknown as File;
+  // const files = [];
+  // for (let [, value] of Array.from(formData.entries())) {
+  //   if (value instanceof File) {
+  //     files.push(value);
+  //   }
+  // }
 
-  console.log("file ", Array.from(formData.entries()));
+  if (!file) {
+    return NextResponse.json({ success: false });
+  }
   const post = await prisma.post.create({
     data: <Post>{
       userId: currentUser?.id,
@@ -121,17 +129,15 @@ export async function POST(request: Request) {
   );
 
   if (resultData) {
-    if (post) {
-      const { secure_url, original_filename } = resultData;
+    const { secure_url, original_filename } = resultData;
 
-      const Image = await prisma.image.createMany({
-        data: <Image>{
-          postId: post.id,
-          imageUrl: secure_url,
-          imageName: original_filename,
-        },
-      });
-      return NextResponse.json({ content, message: "success" });
-    }
+    const Image = await prisma.image.createMany({
+      data: <Image>{
+        postId: post.id,
+        imageUrl: secure_url,
+        imageName: original_filename,
+      },
+    });
+    return NextResponse.json({ content, message: "success" });
   }
 }

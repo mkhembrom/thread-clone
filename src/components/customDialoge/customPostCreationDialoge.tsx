@@ -78,27 +78,38 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
   //   }
   // };
 
-  const handleSubmit = async () => {
-    const formData = new FormData();
-    formData.append("content", content);
-    if (file) {
-      formData.set("image", file as unknown as File);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!file) return;
+
+    console.log("working");
+
+    try {
+      const formData = new FormData();
+      formData.append("content", content);
+      formData.set("image", file);
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_DB_HOST}/api/upload/post`,
+        {
+          method: "POST",
+          body: formData,
+          cache: "no-cache",
+        }
+      );
+
+      const data = await response.json();
+
+      console.log(data);
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      clearData();
     }
-
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_DB_HOST}/api/upload/post`,
-      {
-        method: "POST",
-        body: formData,
-        cache: "no-cache",
-      }
-    );
-
-    const data = await response.json();
   };
 
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = e.target.files;
+    const selectedFiles = e?.target?.files;
 
     if (!selectedFiles) return;
 
@@ -171,8 +182,8 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
                 <AvatarCn source={currentUser?.image!} />
               </div>
               <form
-                // onSubmit={handleSubmit}
-                action={create}
+                onSubmit={handleSubmit}
+                // action={create}
                 className={`w-full flex flex-col items-start justify-start`}
               >
                 <h1>{currentUser?.name}</h1>
@@ -203,7 +214,7 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
                         alt={"upload Image"}
                       />
                       <Button
-                        onClick={() => handleRemoveImage()}
+                        onClick={handleRemoveImage}
                         variant={"ghost"}
                         size={"icon"}
                         className="absolute top-2 right-2 rounded-full text-white w-8 h-8 backdrop-blur-md"
@@ -229,7 +240,6 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
                   <Button
                     type="submit"
                     variant={"outline"}
-                    onClick={clearData}
                     className="dark:bg-zinc-600 bg-zinc-300 dark:hover:bg-zinc-700 hover:bg-zinc-200"
                   >
                     Post

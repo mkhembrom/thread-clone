@@ -68,3 +68,65 @@ export async function create(formData: FormData) {
   }
   return NextResponse.json({ message: "Error" });
 }
+
+export async function getAllPost() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_DB_HOST}/api/post/`, {
+    cache: "no-cache",
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+
+  return res.json();
+}
+
+export async function getProfile(slug: string) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_DB_HOST}/api/${slug}`, {
+    cache: "no-cache",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+  return res.json();
+}
+
+export async function getRepost(userId: string) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_DB_HOST}/api/repost/${userId}`,
+    { cache: "no-cache" }
+  );
+  if (!res.ok) throw new Error("fetch data is failed");
+
+  return res.json();
+}
+
+export async function getReplies(username: string) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_DB_HOST}/api/${username}`,
+    {
+      method: "GET",
+      cache: "no-cache",
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error("fetch data failed");
+  }
+
+  return res.json();
+}
+
+export async function getPost(username: string, postId: string) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_DB_HOST}/api/post/${username}/post/${postId}`,
+    {
+      cache: "no-cache",
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+  return res.json();
+}

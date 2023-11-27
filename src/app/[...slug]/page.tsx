@@ -10,20 +10,7 @@ import ImagePreview from "@/components/imagePreview/imagePreview";
 import AvatarCn from "@/components/avatar/avatar";
 import ReplyAndLike from "@/components/replyAndComment/replyAndLikes";
 import getCurrentUser from "@/components/currentUser/currentUser";
-
-async function getPost(username: string, postId: string) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_DB_HOST}/api/post/${username}/post/${postId}`,
-    {
-      cache: "no-cache",
-    }
-  );
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-  return res.json();
-}
+import { getPost } from "@/actions/action";
 
 export default async function Page({ params }: { params: { slug: string } }) {
   const currentUser = await getCurrentUser();
@@ -63,9 +50,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
               variant={"ghost"}
               size={"icon"}
             >
-              <PostDropDown postId={post?.id} userId={post?.userId}>
-                <ThreeDotsIcon />
-              </PostDropDown>
+              <PostDropDown postId={post?.id} userId={post?.userId} />
             </Button>
           </div>
         </div>
