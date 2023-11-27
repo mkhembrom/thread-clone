@@ -63,14 +63,11 @@ export default function InputImage({
       formData.append("reply", "");
     }
 
-    if (file == "") {
-      formData.append("postId", postData.id);
-      formData.append("userId", currentUser?.id!);
-    } else {
-      formData.append("postId", postData.id);
-      formData.append("userId", currentUser?.id!);
-      formData.append("file", file);
+    if (file != "") {
+      formData.set("file", file);
     }
+    formData.append("postId", postData.id);
+    formData.append("userId", currentUser?.id!);
 
     try {
       setIsOpen(false);
