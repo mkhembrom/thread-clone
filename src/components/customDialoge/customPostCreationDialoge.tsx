@@ -81,19 +81,37 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
       formData.append("content", content);
       formData.set("image", file);
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DB_HOST}/api/upload/post`,
-        {
-          method: "POST",
-          body: formData,
-          cache: "no-cache",
-        }
-      );
+      toast
+        .promise(
+          fetch(
+            `${process.env.NEXT_PUBLIC_DB_HOST}/api/upload/post`,
 
-      const data = await response.json();
-      if (data) {
-        router.refresh();
-      }
+            {
+              method: "POST",
+              body: formData,
+              cache: "no-cache",
+            }
+          ),
+          {
+            loading: "Posting...",
+            success: "Posted",
+            error: (error) => `Error: ${error}`,
+          },
+          {
+            style: {
+              borderRadius: "8px",
+              padding: "12px",
+              width: "250px",
+              backgroundColor: "black",
+              color: "white",
+            },
+          }
+        )
+        .then((data) => {
+          if (data) {
+            router.refresh();
+          }
+        });
     } catch (e: any) {
       console.log("error", e);
     } finally {
@@ -113,33 +131,6 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
     reader.onloadend = () => {
       setFile(reader.result as string);
     };
-    // const selectedFiles = e?.target?.files;
-
-    // if (!selectedFiles) return;
-
-    // if (selectedFiles && selectedFiles.length > 0) {
-    //   const imageFile = selectedFiles[0];
-    //   const preview = URL.createObjectURL(imageFile);
-    //   setDisplay(preview);
-    //   // setFile(imageFile);
-    // }
-
-    // const reader = new FileReader();
-    // reader.readAsDataURL(selectedFiles[0] as unknown as File);
-    // reader.onloadend = () => {
-    //   setFile(reader.result as string);
-    // };
-
-    // const newImageDataList: ImageData[] = [];
-    // for (let i = 0; i < selectedFiles.length; i++) {
-    //   const file = selectedFiles[i];
-
-    //   if (file.type.startsWith("image/")) {
-    //     const preview = URL.createObjectURL(file);
-    //     newImageDataList.push({ id: i, file, preview });
-    //   }
-    // }
-    // setImageList([...newImageDataList]);
   };
 
   const handleRemoveImage = () => {

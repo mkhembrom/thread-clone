@@ -16,9 +16,9 @@ export async function POST(request: Request) {
   const postId = formData.get("postId");
   const userId = formData.get("userId");
   const file = formData.get("file") as string;
-
   const currentUser = await getCurrentUser();
-  if (file == "") {
+
+  if (!file) {
     const comment = await prisma?.comment.create({
       data: {
         userId: `${userId}`,
