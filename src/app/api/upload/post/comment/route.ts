@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   const reply = formData.get("reply");
   const postId = formData.get("postId");
   const userId = formData.get("userId");
-  const file = formData.get("file") as unknown as File;
+  const file = formData.get("file") as string;
 
   const currentUser = await getCurrentUser();
   if (!file) {
@@ -40,8 +40,12 @@ export async function POST(request: Request) {
       },
     });
   } else {
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    const uploadedResponse = await cloudinary.uploader.upload(file, {
+      folder: "threads/comment",
+      upload_preset: "ml_default",
+      resource_type: "image",
+    });
+    const { secure_url, original_filename } = uploadedResponse;
     // fs.writeFileSync(`public/${file.name}`, buffer);
 
     // const uploadedResponse = await cloudinary.uploader.upload(
@@ -52,25 +56,25 @@ export async function POST(request: Request) {
     //     resource_type: "image",
     //   }
     // );
-    const result = await new Promise<any>((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream(
-          {
-            folder: "threads/comment",
-            upload_preset: "ml_default",
-            resource_type: "image",
-          },
-          (error, result) => {
-            if (error) {
-              reject(new Error("Error uploading to Cloudinary"));
-            } else {
-              resolve(result);
-            }
-          }
-        )
-        .end(buffer);
-    });
-    const { secure_url, original_filename } = result;
+    // const result = await new Promise<any>((resolve, reject) => {
+    //   cloudinary.uploader
+    //     .upload_stream(
+    //       {
+    //         folder: "threads/comment",
+    //         upload_preset: "ml_default",
+    //         resource_type: "image",
+    //       },
+    //       (error, result) => {
+    //         if (error) {
+    //           reject(new Error("Error uploading to Cloudinary"));
+    //         } else {
+    //           resolve(result);
+    //         }
+    //       }
+    //     )
+    //     .end(buffer);
+    // });
+    // const { secure_url, original_filename } = result;
 
     const comment = await prisma?.comment.create({
       data: {

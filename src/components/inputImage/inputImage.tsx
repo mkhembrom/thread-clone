@@ -8,7 +8,7 @@ import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import AnimateSpinnerIcon from "../ui/icons/animateSpinner";
 import toast, { Toaster } from "react-hot-toast";
-import { IPost, ISession } from "@/app/types";
+import { IPost, ISession, IUser } from "@/app/types";
 import { Session } from "inspector";
 import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
 
@@ -16,21 +16,24 @@ interface InputImageProps {
   isOpen: boolean;
   postData: IPost;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  currentUser: IUser | any;
 }
 
 export default function InputImage({
   isOpen,
   postData,
   setIsOpen,
+  currentUser,
 }: InputImageProps) {
   const router = useRouter();
   const [modelOpen, setModelOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [reply, setReply] = useState<string>("");
-  const [selectedFile, setSelectedFile] = useState<File | null | undefined>(
-    null
-  );
-  const { user } = useCurrentUserForClient();
+  // const [selectedFile, setSelectedFile] = useState<File | null | undefined>(
+  //   null
+  // );
+  const [file, setFile] = useState<string>("");
+  const [display, setDisplay] = useState<string | undefined>("");
 
   const [image, setImage] = useState<string | undefined>("");
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,12 +42,17 @@ export default function InputImage({
       ? URL.createObjectURL(file)
       : undefined;
     setImage(preview);
-    setSelectedFile(file);
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file as unknown as File);
+    reader.onloadend = () => {
+      setFile(reader.result as string);
+    };
   };
 
   const handleRemoveImage = () => {
     setImage("");
-    setSelectedFile(null);
+    setFile("");
   };
 
   const handlePostReply = async (e: React.MouseEvent<HTMLElement>) => {
@@ -55,13 +63,13 @@ export default function InputImage({
       formData.append("reply", "");
     }
 
-    if (selectedFile == null || selectedFile == undefined) {
+    if (file != "" || file == undefined) {
       formData.append("postId", postData.id);
-      formData.append("userId", user?.id!);
+      formData.append("userId", currentUser?.id!);
     } else {
       formData.append("postId", postData.id);
-      formData.append("userId", user?.id!);
-      formData.append("file", selectedFile);
+      formData.append("userId", currentUser?.id!);
+      formData.append("file", file);
     }
 
     try {
@@ -105,9 +113,9 @@ export default function InputImage({
   return (
     <>
       <div className={`flex space-x-2 w-full `}>
-        <AvatarCn source={user?.image!} />
+        <AvatarCn source={currentUser?.image!} />
         <div className="flex flex-col w-full">
-          <span className=" font-bold">{user?.name}</span>
+          <span className=" font-bold">{currentUser?.name}</span>
           <textarea
             value={reply}
             onChange={(e) => setReply(e.target.value)}

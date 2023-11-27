@@ -11,10 +11,13 @@ import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
 
 interface postLikeButtonProps {
   postData?: IPost;
+  currentUser?: IUser | any;
 }
-export default function PostLikeButton({ postData }: postLikeButtonProps) {
+export default function PostLikeButton({
+  postData,
+  currentUser,
+}: postLikeButtonProps) {
   let isLiked;
-  const { user } = useCurrentUserForClient();
   const [liked, setLiked] = useState<boolean | undefined>(isLiked);
   const route = useRouter();
   const handleLike = async (postId: string) => {
@@ -34,7 +37,7 @@ export default function PostLikeButton({ postData }: postLikeButtonProps) {
     }
   };
 
-  isLiked = postData?.likes?.some((item) => item?.userId === user?.id);
+  isLiked = postData?.likes?.some((item) => item?.userId === currentUser?.id);
 
   return (
     <Button

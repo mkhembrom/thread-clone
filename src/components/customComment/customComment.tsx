@@ -10,11 +10,13 @@ import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
 interface customCommentProps {
   children?: React.ReactNode;
   postData?: IPost;
+  currentUser: IUser | any;
 }
 
 export default function CustomComment({
   children,
   postData,
+  currentUser,
 }: customCommentProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -38,6 +40,7 @@ export default function CustomComment({
           </div>
         </div>
         <InputImage
+          currentUser={currentUser}
           setIsOpen={setIsOpen}
           isOpen={isOpen}
           postData={postData!}
