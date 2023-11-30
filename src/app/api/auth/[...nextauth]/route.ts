@@ -7,6 +7,7 @@ import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import InstagramProvider from "next-auth/providers/instagram";
 import { Prisma } from "@prisma/client";
+import { Adapter } from "next-auth/adapters";
 
 export type CustomUserSession = {
   user?: CustomUser;
@@ -24,7 +25,7 @@ export type CustomUser = {
 };
 
 export const authOptions: AuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma) as Adapter,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_ID! as string,

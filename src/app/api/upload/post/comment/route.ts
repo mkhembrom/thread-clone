@@ -2,6 +2,7 @@ import { v2 as cloudinary } from "cloudinary";
 import { NextRequest, NextResponse } from "next/server";
 import getCurrentUser from "@/components/currentUser/currentUser";
 import { uploadToCloudinary } from "@/lib/uploadToCloudinary";
+import prisma from "@/lib/prismadb";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -17,9 +18,28 @@ export async function POST(request: NextRequest) {
   const imagefile = formData.get("file") as File as unknown;
   const userId = formData.get("userId");
 
+  const files = [];
+  const imagefiles = [];
+  for (const entry of Array.from(formData.entries())) {
+    const [name, value] = entry;
+    if (value instanceof File) {
+      files.push({ name, file: value });
+    }
+  }
+
+  for (const file of files) {
+    const data = await uploadToCloudinary(file.file as any);
+    imagefiles.push(data);
+  }
+
+  const imagePost = imagefiles.map((img) => ({
+    imageName: img.original_filename,
+    imageUrl: img.secure_url,
+  }));
+
   console.log(imagefile);
 
-  if (!imagefile) {
+  if (imagePost.length == 0) {
     const comment = await prisma?.comment.create({
       data: {
         userId: `${userId}`,
@@ -48,17 +68,14 @@ export async function POST(request: NextRequest) {
       comment,
     });
   } else {
-    const imgdata = await uploadToCloudinary(imagefile as any);
-
     const comment = await prisma?.comment.create({
       data: {
         userId: `${userId}`,
         reply: `${reply}`,
         postId: `${postId}`,
         images: {
-          create: {
-            imageUrl: imgdata?.secure_url as string,
-            imageName: imgdata?.original_filename as string,
+          createMany: {
+            data: imagePost,
           },
         },
       },
