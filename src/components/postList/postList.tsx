@@ -5,19 +5,9 @@ import Repost from "../repost/repost";
 import RetweetIcon from "../ui/icons/retweet";
 import Link from "next/link";
 import { formatTimeAgo } from "@/lib/timeFormat";
+import { getAllPost } from "@/actions/action";
 
 type Props = {};
-
-async function getAllPost() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_DB_HOST}/api/post/`, {
-    cache: "no-cache",
-  });
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-
-  return res.json();
-}
 
 export default async function PostList({}: Props) {
   const { allPosts } = await getAllPost();
