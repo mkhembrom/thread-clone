@@ -96,8 +96,10 @@ export default function InputImage({
           return res.json();
         })
         .then((data) => {
-          router.refresh();
-          console.log(data);
+          if (data) {
+            router.refresh();
+            console.log(data);
+          }
         });
     } catch (error) {
       console.log(error);

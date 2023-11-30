@@ -43,6 +43,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       message: "success",
+      comment,
     });
   } else {
     const imgdata = await uploadToCloudinary(imagefile);
