@@ -17,6 +17,8 @@ export async function POST(request: Request) {
   const userId = formData.get("userId");
   const currentUser = await getCurrentUser();
 
+  console.log(imagefile);
+
   if (!imagefile) {
     const comment = await prisma?.comment.create({
       data: {
@@ -45,38 +47,36 @@ export async function POST(request: Request) {
   } else {
     const imgdata = await uploadToCloudinary(imagefile);
 
-    if (imgdata) {
-      const comment = await prisma?.comment.create({
-        data: {
-          userId: `${userId}`,
-          reply: `${reply}`,
-          postId: `${postId}`,
-          images: {
-            create: {
-              imageUrl: imgdata.secure_url,
-              imageName: imgdata.original_filename,
-            },
+    const comment = await prisma?.comment.create({
+      data: {
+        userId: `${userId}`,
+        reply: `${reply}`,
+        postId: `${postId}`,
+        images: {
+          create: {
+            imageUrl: imgdata.secure_url as string,
+            imageName: imgdata.original_filename as string,
           },
         },
-        include: {
-          post: true,
-        },
-      });
+      },
+      include: {
+        post: true,
+      },
+    });
 
-      await prisma?.notification.create({
-        data: {
-          commentId: comment?.id,
-          userId: currentUser?.id,
-          toUserId: comment?.post?.userId,
-          postId: `${postId}`,
-          body: `${currentUser?.username} commented on your post`,
-        },
-      });
+    await prisma?.notification.create({
+      data: {
+        commentId: comment?.id,
+        userId: currentUser?.id,
+        toUserId: comment?.post?.userId,
+        postId: `${postId}`,
+        body: `${currentUser?.username} commented on your post`,
+      },
+    });
 
-      return NextResponse.json({
-        message: "success",
-        comment,
-      });
-    }
+    return NextResponse.json({
+      message: "success",
+      comment,
+    });
   }
 }
