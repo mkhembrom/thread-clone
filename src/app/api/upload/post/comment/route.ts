@@ -31,15 +31,17 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    await prisma?.notification.create({
-      data: {
-        commentId: comment?.id,
-        userId: currentUser?.id,
-        toUserId: comment?.post?.userId,
-        postId: `${postId}`,
-        body: `${currentUser?.username} commented on your post`,
-      },
-    });
+    if (comment) {
+      await prisma?.notification.create({
+        data: {
+          commentId: comment?.id,
+          userId: currentUser?.id,
+          toUserId: comment?.post?.userId,
+          postId: `${postId}`,
+          body: `${currentUser?.username} commented on your post`,
+        },
+      });
+    }
 
     return NextResponse.json({
       message: "success",
@@ -55,8 +57,8 @@ export async function POST(request: NextRequest) {
         postId: `${postId}`,
         images: {
           create: {
-            imageUrl: imgdata.secure_url as string,
-            imageName: imgdata.original_filename as string,
+            imageUrl: imgdata?.secure_url as string,
+            imageName: imgdata?.original_filename as string,
           },
         },
       },
@@ -65,15 +67,17 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    await prisma?.notification.create({
-      data: {
-        commentId: comment?.id,
-        userId: currentUser?.id,
-        toUserId: comment?.post?.userId,
-        postId: `${postId}`,
-        body: `${currentUser?.username} commented on your post`,
-      },
-    });
+    if (comment) {
+      await prisma?.notification.create({
+        data: {
+          commentId: comment?.id,
+          userId: currentUser?.id,
+          toUserId: comment?.post?.userId,
+          postId: `${postId}`,
+          body: `${currentUser?.username} commented on your post`,
+        },
+      });
+    }
 
     return NextResponse.json({
       message: "success",
