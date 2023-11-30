@@ -48,9 +48,6 @@ export async function POST(request: NextRequest) {
         },
       },
     },
-    select: {
-      image: true,
-    },
   });
 
   return NextResponse.json({ content, message: "success", post });

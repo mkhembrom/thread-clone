@@ -1,3 +1,5 @@
+"use server";
+
 import PostCreation from "@/components/postCreation/postCreation";
 import PostList from "@/components/postList/postList";
 import { loginIsRequiredServer } from "@/lib/isLoginUser";
