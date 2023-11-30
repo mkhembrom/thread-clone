@@ -7,6 +7,7 @@ import getCurrentUser from "@/components/currentUser/currentUser";
 import { Image, Post } from "@prisma/client";
 import { resolve } from "path";
 import toast from "react-hot-toast";
+import { uploadToCloudinary } from "@/lib/uploadToCloudinary";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -18,39 +19,39 @@ export async function POST(request: NextRequest) {
   const formData = await request.formData();
   const currentUser = await getCurrentUser();
   const content = formData.get("content");
-  const file = formData.get("image");
-
-  if (file) {
-    const post = await prisma.post.create({
-      data: <Post>{
-        userId: currentUser?.id,
-        content: content,
-      },
-    });
-
-    const uploadedResponse = await cloudinary.uploader.upload(file as string, {
-      folder: "threads/post",
-      upload_preset: "ml_default",
-      resource_type: "image",
-    });
-    const { secure_url, original_filename } = uploadedResponse;
-
-    const Image = await prisma.image.createMany({
-      data: <Image>{
-        postId: post.id,
-        imageUrl: secure_url,
-        imageName: original_filename,
-      },
-    });
-
-    return NextResponse.json({ content, message: "success" });
-  } else {
-    const post = await prisma.post.create({
-      data: <Post>{
-        userId: currentUser?.id,
-        content: content,
-      },
-    });
-    return NextResponse.json({ content, message: "success" });
+  const files = [];
+  const imagefiles = [];
+  for (const entry of Array.from(formData.entries())) {
+    const [name, value] = entry;
+    if (value instanceof File) {
+      files.push({ name, file: value });
+    }
   }
+
+  for (const file of files) {
+    const data = await uploadToCloudinary(file.file as any);
+    imagefiles.push(data);
+  }
+
+  const imagePost = imagefiles.map((img) => ({
+    imageName: img.original_filename,
+    imageUrl: img.secure_url,
+  }));
+
+  const post = await prisma.post.create({
+    data: {
+      userId: currentUser?.id as string,
+      content: content as string,
+      image: {
+        createMany: {
+          data: imagePost,
+        },
+      },
+    },
+    select: {
+      image: true,
+    },
+  });
+
+  return NextResponse.json({ content, message: "success", post });
 }
