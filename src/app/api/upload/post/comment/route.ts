@@ -42,41 +42,41 @@ export async function POST(request: Request) {
     return NextResponse.json({
       message: "success",
     });
-  }
+  } else {
+    const imgdata = await uploadToCloudinary(imagefile);
 
-  const data = await uploadToCloudinary(imagefile);
-
-  if (data) {
-    const comment = await prisma?.comment.create({
-      data: {
-        userId: `${userId}`,
-        reply: `${reply}`,
-        postId: `${postId}`,
-        images: {
-          create: {
-            imageUrl: data.secure_url,
-            imageName: data.original_filename,
+    if (imgdata) {
+      const comment = await prisma?.comment.create({
+        data: {
+          userId: `${userId}`,
+          reply: `${reply}`,
+          postId: `${postId}`,
+          images: {
+            create: {
+              imageUrl: imgdata.secure_url,
+              imageName: imgdata.original_filename,
+            },
           },
         },
-      },
-      include: {
-        post: true,
-      },
-    });
+        include: {
+          post: true,
+        },
+      });
 
-    await prisma?.notification.create({
-      data: {
-        commentId: comment?.id,
-        userId: currentUser?.id,
-        toUserId: comment?.post?.userId,
-        postId: `${postId}`,
-        body: `${currentUser?.username} commented on your post`,
-      },
-    });
+      await prisma?.notification.create({
+        data: {
+          commentId: comment?.id,
+          userId: currentUser?.id,
+          toUserId: comment?.post?.userId,
+          postId: `${postId}`,
+          body: `${currentUser?.username} commented on your post`,
+        },
+      });
 
-    return NextResponse.json({
-      message: "success",
-      comment,
-    });
+      return NextResponse.json({
+        message: "success",
+        comment,
+      });
+    }
   }
 }
