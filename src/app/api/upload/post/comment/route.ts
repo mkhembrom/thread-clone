@@ -10,12 +10,12 @@ cloudinary.config({
 });
 
 export async function POST(request: Request) {
+  const currentUser = await getCurrentUser();
   const formData = await request.formData();
   const reply = formData.get("reply");
   const postId = formData.get("postId");
-  const imagefile = formData.get("file") as File;
+  const imagefile = formData.get("file") as File as unknown;
   const userId = formData.get("userId");
-  const currentUser = await getCurrentUser();
 
   console.log(imagefile);
 
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
       comment,
     });
   } else {
-    const imgdata = await uploadToCloudinary(imagefile);
+    const imgdata = await uploadToCloudinary(imagefile as any);
 
     const comment = await prisma?.comment.create({
       data: {
