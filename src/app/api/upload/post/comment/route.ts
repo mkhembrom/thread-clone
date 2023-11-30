@@ -1,5 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import getCurrentUser from "@/components/currentUser/currentUser";
 import { uploadToCloudinary } from "@/lib/uploadToCloudinary";
 
@@ -9,7 +9,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const currentUser = await getCurrentUser();
   const formData = await request.formData();
   const reply = formData.get("reply");
