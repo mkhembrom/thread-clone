@@ -1,8 +1,7 @@
-import fs from "fs";
 import { v2 as cloudinary } from "cloudinary";
 import { NextResponse } from "next/server";
-import { join } from "path";
 import getCurrentUser from "@/components/currentUser/currentUser";
+import { uploadToCloudinary } from "@/lib/uploadToCloudinary";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -14,11 +13,11 @@ export async function POST(request: Request) {
   const formData = await request.formData();
   const reply = formData.get("reply");
   const postId = formData.get("postId");
+  const imagefile = formData.get("file") as File;
   const userId = formData.get("userId");
-  const file = formData.get("file") as string;
   const currentUser = await getCurrentUser();
 
-  if (!file || file == "" || file == undefined) {
+  if (!imagefile) {
     const comment = await prisma?.comment.create({
       data: {
         userId: `${userId}`,
@@ -39,13 +38,15 @@ export async function POST(request: Request) {
         body: `${currentUser?.username} commented on your post`,
       },
     });
-  } else {
-    const uploadedResponse = await cloudinary.uploader.upload(file, {
-      folder: "threads/comment",
-      upload_preset: "ml_default",
-      resource_type: "image",
+
+    return NextResponse.json({
+      message: "success",
     });
-    const { secure_url, original_filename } = uploadedResponse;
+  }
+
+  const data = await uploadToCloudinary(imagefile);
+
+  if (data) {
     const comment = await prisma?.comment.create({
       data: {
         userId: `${userId}`,
@@ -53,8 +54,8 @@ export async function POST(request: Request) {
         postId: `${postId}`,
         images: {
           create: {
-            imageUrl: secure_url,
-            imageName: original_filename,
+            imageUrl: data.secure_url,
+            imageName: data.original_filename,
           },
         },
       },
@@ -72,9 +73,10 @@ export async function POST(request: Request) {
         body: `${currentUser?.username} commented on your post`,
       },
     });
-  }
 
-  return NextResponse.json({
-    message: "success",
-  });
+    return NextResponse.json({
+      message: "success",
+      comment,
+    });
+  }
 }

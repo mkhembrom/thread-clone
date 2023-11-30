@@ -29,41 +29,33 @@ export default function InputImage({
   const [modelOpen, setModelOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [reply, setReply] = useState<string>("");
-  // const [selectedFile, setSelectedFile] = useState<File | null | undefined>(
-  //   null
-  // );
-  const [file, setFile] = useState<string>("");
+  const [file, setFile] = useState<File | null>(null);
   const [display, setDisplay] = useState<string | undefined>("");
-
   const [image, setImage] = useState<string | undefined>("");
+
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file: File | undefined = e.target?.files?.[0];
     const preview: string | undefined = file
       ? URL.createObjectURL(file)
       : undefined;
     setImage(preview);
-
-    const reader = new FileReader();
-    reader.readAsDataURL(file as unknown as File);
-    reader.onloadend = () => {
-      setFile(reader.result as string);
-    };
+    setFile(file as File);
   };
 
   const handleRemoveImage = () => {
     setImage("");
-    setFile("");
+    setFile(null);
   };
 
   const handlePostReply = async (e: React.MouseEvent<HTMLElement>) => {
     const formData = new FormData();
-    if (reply.length) {
+    if (reply.length > 1) {
       formData.append("reply", reply);
     } else {
       formData.append("reply", "");
     }
 
-    if (file === "") {
+    if (!file) {
       formData.append("userId", currentUser?.id!);
       formData.append("postId", postData.id);
     } else {
@@ -86,7 +78,7 @@ export default function InputImage({
             }
           ),
           {
-            loading: "Posting...",
+            loading: "Posting comment...",
             success: "Posted",
             error: (error) => `Error: ${error}`,
           },
@@ -100,10 +92,12 @@ export default function InputImage({
             },
           }
         )
+        .then((res) => {
+          return res.json();
+        })
         .then((data) => {
-          if (data) {
-            router.refresh();
-          }
+          router.refresh();
+          console.log(data);
         });
     } catch (error) {
       console.log(error);
