@@ -18,15 +18,15 @@ export default function Tabs({ user }: Props) {
 
   useEffect(() => {
     setIsClient(true);
-    if (idx === 0) {
+    if (idx == 0) {
       setName(`Threads`);
       router.push(`/${user.username}`);
     }
-    if (idx === 1) {
+    if (idx == 1) {
       setName(`Replies`);
       router.push(`/${user.username}/replies`);
     }
-    if (idx === 2) {
+    if (idx == 2) {
       setName(`Reposts`);
       router.push(`/${user.username}/reposts`);
     }
@@ -43,7 +43,6 @@ export default function Tabs({ user }: Props) {
                 className={`relative flex-1 py-2 text-center text-md w-full border-b`}
               >
                 {tab}
-
                 {name === tabs[index] && (
                   <motion.div
                     layoutId="underline"

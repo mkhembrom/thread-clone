@@ -93,9 +93,11 @@ export async function getProfile(slug: string) {
   return res.json();
 }
 
-export async function getRepost(userId: string) {
+export async function getRepost() {
+  const currentUser = await getCurrentUser();
+
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_DB_HOST}/api/repost/${userId}`,
+    `${process.env.NEXT_PUBLIC_DB_HOST}/api/repost/${currentUser?.id}`,
     { cache: "no-cache" }
   );
   if (!res.ok) throw new Error("fetch data is failed");
@@ -103,9 +105,11 @@ export async function getRepost(userId: string) {
   return res.json();
 }
 
-export async function getReplies(username: string) {
+export async function getReplies() {
+  const currentUser = await getCurrentUser();
+
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_DB_HOST}/api/${username}`,
+    `${process.env.NEXT_PUBLIC_DB_HOST}/api/${currentUser?.username}`,
     {
       method: "GET",
       cache: "no-cache",
