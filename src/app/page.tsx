@@ -1,9 +1,19 @@
 "use server";
 
-import { getAllPost } from "@/actions/action";
 import PostCreation from "@/components/postCreation/postCreation";
 import PostList from "@/components/postList/postList";
 import { loginIsRequiredServer } from "@/lib/isLoginUser";
+
+export async function getAllPost() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_DB_HOST}/api/post/`, {
+    method: "GET",
+    cache: "no-cache",
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+  return res.json();
+}
 
 export default async function Page() {
   await loginIsRequiredServer();

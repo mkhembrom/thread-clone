@@ -69,17 +69,6 @@ export async function create(formData: FormData) {
   return NextResponse.json({ message: "Error" });
 }
 
-export async function getAllPost() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_DB_HOST}/api/post/`, {
-    method: "GET",
-    cache: "no-cache",
-  });
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-  return res.json();
-}
-
 export async function getProfile(slug: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_DB_HOST}/api/${slug}`, {
     cache: "no-cache",
