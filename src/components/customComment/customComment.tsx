@@ -5,7 +5,7 @@ import InputImage from "../inputImage/inputImage";
 import { IPost, ISession, IUser } from "@/app/types";
 import ImagePreview from "../imagePreview/imagePreview";
 import AvatarCn from "../avatar/avatar";
-import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
+import useCurrentUserForClient from "@/lib/clientComponent";
 
 interface customCommentProps {
   children?: React.ReactNode;

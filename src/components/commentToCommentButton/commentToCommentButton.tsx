@@ -11,7 +11,7 @@ import { formatTimeAgo } from "@/lib/timeFormat";
 import CrossIcon from "../ui/icons/cross";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
+import useCurrentUserForClient from "@/lib/clientComponent";
 
 interface commentToCommentProps {
   comment: IComment;

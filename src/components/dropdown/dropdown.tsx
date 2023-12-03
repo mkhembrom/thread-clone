@@ -15,8 +15,8 @@ import EditProfile from "../editProfile/editProfile";
 interface dropdownMenuCheckboxesProps {}
 
 export function DropdownMenuCheckboxes({}: dropdownMenuCheckboxesProps) {
-  const handleSignOut = () => {
-    signOut();
+  const handleSignOut = async () => {
+    await signOut();
   };
   const [isOpen, setIsOpen] = React.useState(false);
   const [isOpenHere, setIsOpenHere] = React.useState(false);

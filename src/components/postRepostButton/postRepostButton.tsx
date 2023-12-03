@@ -6,14 +6,16 @@ import RetweetIcon from "../ui/icons/retweet";
 import toast from "react-hot-toast";
 import RetweetGreenIcon from "../ui/icons/retweetgreen";
 import { useRouter } from "next/navigation";
-import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
 
 interface postRepostButtonProps {
   postData: IPost;
+  user: any;
 }
 
-export default function PostRepostButton({ postData }: postRepostButtonProps) {
-  const { user } = useCurrentUserForClient();
+export default function PostRepostButton({
+  postData,
+  user,
+}: postRepostButtonProps) {
   const router = useRouter();
   let repostdata;
   const handleRepostBtn = async () => {

@@ -10,7 +10,7 @@ import AvatarCn from "../avatar/avatar";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
+import useCurrentUserForClient from "@/lib/clientComponent";
 
 interface userProfileProps {
   user: IUser;

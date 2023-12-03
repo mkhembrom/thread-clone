@@ -71,12 +71,14 @@ export async function create(formData: FormData) {
 
 export async function getAllPost() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_DB_HOST}/api/post/`, {
+    method: "GET",
     cache: "no-cache",
   });
   if (!res.ok) {
     throw new Error("Failed to fetch data");
   }
 
+  revalidatePath("/");
   return res.json();
 }
 

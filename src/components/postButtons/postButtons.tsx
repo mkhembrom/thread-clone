@@ -21,7 +21,7 @@ export default async function PostButtons({ postData }: postButtonsProps) {
       <CustomComment postData={postData} currentUser={currentUser}>
         <MessageIcon />
       </CustomComment>
-      <PostRepostButton postData={postData!} />
+      <PostRepostButton postData={postData!} user={currentUser} />
       <Button variant={"ghost"} className="rounded-full" size={"icon"}>
         <SendIcon />
       </Button>

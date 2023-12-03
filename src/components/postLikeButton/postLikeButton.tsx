@@ -7,7 +7,7 @@ import HeartLikeIcon from "../ui/icons/heartLike";
 import HeartIcon from "../ui/icons/heart";
 import { useRouter } from "next/navigation";
 import useStore from "@/store/store";
-import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
+import useCurrentUserForClient from "@/lib/clientComponent";
 
 interface postLikeButtonProps {
   postData?: IPost;

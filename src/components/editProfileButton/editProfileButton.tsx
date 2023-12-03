@@ -11,7 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Avatar } from "../ui/avatar";
-import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
+import useCurrentUserForClient from "@/lib/clientComponent";
 import AvatarCn from "../avatar/avatar";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";

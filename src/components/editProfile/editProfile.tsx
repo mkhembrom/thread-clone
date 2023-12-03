@@ -17,7 +17,7 @@ import { SetStateAction, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { IUser } from "@/app/types";
-import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
+import useCurrentUserForClient from "@/lib/clientComponent";
 import AvatarCn from "../avatar/avatar";
 import prisma from "@/lib/prismadb";
 interface editProfileProps {

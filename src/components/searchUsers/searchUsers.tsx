@@ -3,7 +3,7 @@ import React, { Suspense } from "react";
 import UsersProfile from "../usersProfile/usersProfile";
 import { IUser } from "@/app/types";
 import useStore from "@/store/store";
-import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
+import useCurrentUserForClient from "@/lib/clientComponent";
 import { useSearchParams } from "next/navigation";
 import Loading from "@/app/post/loading";
 

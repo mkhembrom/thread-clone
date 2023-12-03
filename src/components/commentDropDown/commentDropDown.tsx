@@ -11,7 +11,7 @@ import {
 import getCurrentUser from "../currentUser/currentUser";
 import prisma from "@/lib/prismadb";
 import DeletePost from "../deletePost/deletePost";
-import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
+import useCurrentUserForClient from "@/lib/clientComponent";
 
 interface postDropDownProps {
   children: React.ReactNode;

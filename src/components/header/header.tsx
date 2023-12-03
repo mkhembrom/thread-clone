@@ -83,7 +83,7 @@ export default async function Header({ backArrow }: Props) {
             </CustomLink>
 
             <CustomLink linkName={`/${currentUser?.username}`}>
-              <ProfileIcon />
+              <ProfileIcon user={currentUser} />
             </CustomLink>
           </ul>
         </nav>

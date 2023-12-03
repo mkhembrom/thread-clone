@@ -9,7 +9,7 @@ import { IComment, ILike, IUser } from "@/app/types";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import CommentToCommentButton from "../commentToCommentButton/commentToCommentButton";
-import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
+import useCurrentUserForClient from "@/lib/clientComponent";
 
 interface commentButtonsProps {
   comment: IComment | any;

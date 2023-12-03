@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import FollowButton from "@/components/followButton/followButton";
 import EditProfileButton from "@/components/editProfileButton/editProfileButton";
 import { loginIsRequiredServer } from "@/lib/isLoginUser";
+import { getProfile } from "@/actions/action";
 
 type Props = {
   children: ReactNode;
@@ -18,17 +19,6 @@ type Props = {
     slug: string;
   };
 };
-
-async function getProfile(slug: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_DB_HOST}/api/${slug}`, {
-    cache: "no-cache",
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-  return res.json();
-}
 
 export default async function Layout({ children, params }: Props) {
   await loginIsRequiredServer();
@@ -100,7 +90,9 @@ export default async function Layout({ children, params }: Props) {
         )}
       </div>
       <div className={`flex items-center justify-center`}>
+        {/* <ClientComponent> */}
         <Tabs user={user} />
+        {/* </ClientComponent> */}
       </div>
 
       {children}

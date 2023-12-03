@@ -3,7 +3,7 @@ import React from "react";
 import { Button } from "../ui/button";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
+import useCurrentUserForClient from "@/lib/clientComponent";
 import { IUser } from "@/app/types";
 
 type followButtonProps = {

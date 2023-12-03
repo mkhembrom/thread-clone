@@ -1,7 +1,7 @@
 "use client";
 
 import prisma from "@/lib/prismadb";
-import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
+import useCurrentUserForClient from "@/lib/clientComponent";
 import React, { useEffect, useState } from "react";
 
 const useNotification = () => {
