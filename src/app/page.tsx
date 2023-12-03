@@ -5,7 +5,7 @@ import PostList from "@/components/postList/postList";
 import { loginIsRequiredServer } from "@/lib/isLoginUser";
 
 export async function getAllPost() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_DB_HOST}/api/post/`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_DB_HOST}/api/post`, {
     method: "GET",
     cache: "no-cache",
   });
