@@ -22,6 +22,7 @@ import router from "next/router";
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import { UploadApiResponse, v2 as cloudinary } from "cloudinary";
 import { uploadToCloudinary } from "@/lib/uploadToCloudinary";
+import { revalidatePath } from "next/cache";
 
 interface Props {
   customBtn?: boolean;
@@ -51,42 +52,30 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
         }
       }
 
-      toast
-        .promise(
-          fetch(
-            `${process.env.NEXT_PUBLIC_DB_HOST}/api/upload/post`,
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_DB_HOST}/api/upload/post`,
 
-            {
-              method: "POST",
-              body: formData,
-              cache: "no-cache",
-            }
-          ),
-          {
-            loading: "Posting...",
-            success: "Posted",
-            error: (error) => `Error: ${error}`,
+        {
+          method: "POST",
+          body: formData,
+          cache: "no-cache",
+        }
+      );
+
+      const data = await res.json();
+
+      if (data) {
+        toast.success("Posted", {
+          style: {
+            borderRadius: "8px",
+            padding: "12px",
+            width: "250px",
+            backgroundColor: "black",
+            color: "white",
           },
-          {
-            style: {
-              borderRadius: "8px",
-              padding: "12px",
-              width: "250px",
-              backgroundColor: "black",
-              color: "white",
-            },
-          }
-        )
-        .then((res) => {
-          return res.json();
-        })
-        .then((data) => {
-          console.log(data);
-          if (data) {
-            clearData();
-            router.refresh();
-          }
         });
+        router.refresh();
+      }
     } catch (e: any) {
       console.log("error", e);
     } finally {

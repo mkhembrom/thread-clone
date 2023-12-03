@@ -1,3 +1,5 @@
+"use server";
+
 import React from "react";
 import Post from "../post/post";
 import { IPost } from "@/app/types";
@@ -5,16 +7,16 @@ import Repost from "../repost/repost";
 import RetweetIcon from "../ui/icons/retweet";
 import Link from "next/link";
 import { formatTimeAgo } from "@/lib/timeFormat";
-import { getAllPost } from "@/actions/action";
 
-type Props = {};
+type Props = {
+  allPosts: IPost[];
+};
 
-export default async function PostList({}: Props) {
-  const { allPosts } = await getAllPost();
-
+export default async function PostList({ allPosts }: Props) {
+  const posts = allPosts;
   return (
     <div className=" justify-center flex flex-col items-center py-4">
-      {allPosts.map((item: IPost) => {
+      {posts.map((item: IPost) => {
         if (item.post) {
           return (
             <div key={item.post.id} className="rounded-3xl w-full">

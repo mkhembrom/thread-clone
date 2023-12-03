@@ -9,8 +9,6 @@ import { useRouter } from "next/navigation";
 import AnimateSpinnerIcon from "../ui/icons/animateSpinner";
 import toast, { Toaster } from "react-hot-toast";
 import { IPost, ISession, IUser } from "@/app/types";
-import { Session } from "inspector";
-import useCurrentUserForClient from "@/lib/useCurrentUserForClient";
 
 interface InputImageProps {
   isOpen: boolean;
@@ -26,7 +24,6 @@ export default function InputImage({
   currentUser,
 }: InputImageProps) {
   const router = useRouter();
-  const [modelOpen, setModelOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [reply, setReply] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
@@ -61,59 +58,48 @@ export default function InputImage({
     } else {
       formData.append("userId", currentUser?.id!);
       formData.append("postId", postData.id);
-      formData.append("file", file);
+      formData.append("image", file);
     }
 
     try {
       setIsOpen(false);
-      toast
-        .promise(
-          fetch(
-            `${process.env.NEXT_PUBLIC_DB_HOST}/api/upload/post/comment`,
 
-            {
-              method: "POST",
-              body: formData,
-              cache: "no-cache",
-            }
-          ),
-          {
-            loading: "Posting comment...",
-            success: "Posted",
-            error: (error) => `Error: ${error}`,
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_DB_HOST}/api/upload/post/comment`,
+        {
+          method: "POST",
+          body: formData,
+          cache: "no-cache",
+        }
+      );
+      const data = await res.json();
+
+      if (data) {
+        toast.success("Posted", {
+          style: {
+            borderRadius: "8px",
+            padding: "12px",
+            width: "250px",
+            backgroundColor: "black",
+            color: "white",
           },
-          {
-            style: {
-              borderRadius: "8px",
-              padding: "12px",
-              width: "250px",
-              backgroundColor: "black",
-              color: "white",
-            },
-          }
-        )
-        .then((res) => {
-          return res.json();
-        })
-        .then((data) => {
-          if (data) {
-            router.refresh();
-            console.log(data);
-          }
         });
+        router.refresh();
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
   return (
-    <>
+    <div>
       <div className={`flex space-x-2 w-full `}>
         <AvatarCn source={currentUser?.image!} />
         <div className="flex flex-col w-full">
           <span className=" font-bold">{currentUser?.name}</span>
           <textarea
             value={reply}
+            name="reply"
             onChange={(e) => setReply(e.target.value)}
             className="bg-transparent outline-none border-none text-sm w-full resize-none"
             placeholder={`Reply to ${postData?.user?.name!}...`}
@@ -121,6 +107,7 @@ export default function InputImage({
           <input
             accept="image/*"
             type="file"
+            name="image"
             id="imageFiles"
             className="hidden"
             onChange={handleFile}
@@ -163,6 +150,7 @@ export default function InputImage({
             Anyone can reply
           </Button>
           <Button
+            // type="submit"
             onClick={handlePostReply}
             className="dark:bg-zinc-600 bg-zinc-300 dark:hover:bg-zinc-700 hover:bg-zinc-200"
             variant={"outline"}
@@ -177,6 +165,6 @@ export default function InputImage({
           </Button>
         </div>
       </div>
-    </>
+    </div>
   );
 }

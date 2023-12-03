@@ -2,11 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prismadb";
 import { UploadApiResponse, v2 as cloudinary } from "cloudinary";
 import { File } from "buffer";
-import { ICloudinary, IPost } from "@/app/types";
 import getCurrentUser from "@/components/currentUser/currentUser";
-import { Image, Post } from "@prisma/client";
-import { resolve } from "path";
-import toast from "react-hot-toast";
 import { uploadToCloudinary } from "@/lib/uploadToCloudinary";
 
 cloudinary.config({

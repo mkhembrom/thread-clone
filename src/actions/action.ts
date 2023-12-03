@@ -130,3 +130,12 @@ export async function getPost(username: string, postId: string) {
   }
   return res.json();
 }
+
+export async function commentSubmit(formData: FormData) {
+  const reply = formData.get("reply");
+  const postId = formData.get("postId");
+  const imagefile = formData.get("image") as File as unknown;
+  const userId = formData.get("userId");
+
+  console.log(JSON.stringify({ reply, postId, imagefile, userId }));
+}
