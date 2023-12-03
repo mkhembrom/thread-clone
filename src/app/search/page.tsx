@@ -7,7 +7,7 @@ import prisma from "@/lib/prismadb";
 import { loginIsRequiredServer } from "@/lib/isLoginUser";
 type Props = {};
 
-export default async function page({}: Props) {
+export default async function Page({}: Props) {
   const currentUser = await getCurrentUser();
 
   const users: IUser | any = await prisma?.user.findMany({

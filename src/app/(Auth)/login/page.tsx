@@ -3,9 +3,9 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import React, { useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { motion } from "framer-motion";
-import { useRouter, useSearchParams } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import LoadingIcon from "@/components/ui/icons/loading";
 import toast from "react-hot-toast";
 import Link from "next/link";
@@ -24,6 +24,11 @@ export default function Login() {
     password: "",
   };
 
+  const session = useSession();
+
+  if (!session) {
+    redirect("/login");
+  }
   const router = useRouter();
 
   const searchParams = useSearchParams();

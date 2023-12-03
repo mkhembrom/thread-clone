@@ -77,8 +77,6 @@ export async function getAllPost() {
   if (!res.ok) {
     throw new Error("Failed to fetch data");
   }
-
-  revalidatePath("/");
   return res.json();
 }
 
