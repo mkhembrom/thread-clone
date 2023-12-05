@@ -9,10 +9,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import getCurrentUser from "../currentUser/currentUser";
-import prisma from "@/lib/prismadb";
-import DeletePost from "../deletePost/deletePost";
-import useCurrentUserForClient from "@/lib/clientComponent";
 import CustomAlertDialoge from "../customAlert/customAlertDialoge";
 import ThreeDotsIcon from "../ui/icons/threeDots";
 import { IUser } from "@/app/types";

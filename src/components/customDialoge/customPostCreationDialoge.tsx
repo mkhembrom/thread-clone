@@ -52,20 +52,22 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
         }
       }
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_DB_HOST}/api/upload/post`,
+      toast.promise(
+        fetch(
+          `${process.env.NEXT_PUBLIC_DB_HOST}/api/upload/post`,
 
+          {
+            method: "POST",
+            body: formData,
+            cache: "no-cache",
+          }
+        ),
         {
-          method: "POST",
-          body: formData,
-          cache: "no-cache",
-        }
-      );
-
-      const data = await res.json();
-
-      if (data) {
-        toast.success("Posted", {
+          loading: "...Posting",
+          success: "Posted",
+          error: "Error when fetching",
+        },
+        {
           style: {
             borderRadius: "8px",
             padding: "12px",
@@ -73,9 +75,8 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
             backgroundColor: "black",
             color: "white",
           },
-        });
-        router.refresh();
-      }
+        }
+      );
     } catch (e: any) {
       console.log("error", e);
     } finally {

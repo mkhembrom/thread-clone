@@ -5,6 +5,7 @@ import { Image, Post } from "@prisma/client";
 import getCurrentUser from "@/components/currentUser/currentUser";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
+import { signIn } from "next-auth/react";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -131,4 +132,26 @@ export async function commentSubmit(formData: FormData) {
   const userId = formData.get("userId");
 
   console.log(JSON.stringify({ reply, postId, imagefile, userId }));
+}
+
+export async function getAllPost() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_DB_HOST}/api/`, {
+    method: "GET",
+    cache: "no-cache",
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+  return res.json();
+}
+
+export async function login(formData: FormData) {
+  const userinfo = formData.get("userinfo");
+  const password = formData.get("password");
+
+  await signIn("credentials", {
+    identifier: userinfo,
+    password: password,
+    redirect: false,
+  });
 }

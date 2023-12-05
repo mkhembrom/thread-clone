@@ -9,20 +9,22 @@ import { IComment, ILike, IUser } from "@/app/types";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import CommentToCommentButton from "../commentToCommentButton/commentToCommentButton";
-import useCurrentUserForClient from "@/lib/clientComponent";
 
 interface commentButtonsProps {
   comment: IComment | any;
+  currentUser: IUser | any;
 }
 
 type myPromsieData = {
   message: string;
 };
 
-export default function CommentButtons({ comment }: commentButtonsProps) {
+export default function CommentButtons({
+  comment,
+  currentUser,
+}: commentButtonsProps) {
   let isMatch;
   const router = useRouter();
-  const { user } = useCurrentUserForClient();
 
   const myPromise = (): Promise<myPromsieData> => {
     return new Promise((resolve, reject) => {
@@ -30,7 +32,7 @@ export default function CommentButtons({ comment }: commentButtonsProps) {
         `${process.env.NEXT_PUBLIC_DB_HOST}/api/like/${comment.postId}/${comment.id}`,
         {
           method: "POST",
-          body: JSON.stringify({ userId: user?.id }),
+          body: JSON.stringify({ userId: currentUser?.id }),
           cache: "no-cache",
         }
       ).then((data) => {
@@ -66,7 +68,7 @@ export default function CommentButtons({ comment }: commentButtonsProps) {
       });
   };
 
-  isMatch = comment?.likes.some((item: any) => item.userId === user?.id);
+  isMatch = comment?.likes.some((item: any) => item.userId === currentUser?.id);
 
   return (
     <div className="flex space-x-1 items-center py-0 z-10">
@@ -79,7 +81,7 @@ export default function CommentButtons({ comment }: commentButtonsProps) {
         {isMatch ? <HeartLikeIcon /> : <HeartIcon />}
       </Button>
 
-      <CommentToCommentButton comment={comment!} />
+      <CommentToCommentButton comment={comment!} currentUser={currentUser} />
       <Button variant={"ghost"} className="rounded-full" size={"icon"}>
         <RetweetIcon />
       </Button>

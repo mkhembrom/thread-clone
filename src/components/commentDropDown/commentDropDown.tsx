@@ -8,25 +8,23 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import getCurrentUser from "../currentUser/currentUser";
-import prisma from "@/lib/prismadb";
 import DeletePost from "../deletePost/deletePost";
-import useCurrentUserForClient from "@/lib/clientComponent";
+import { IUser } from "@/app/types";
 
-interface postDropDownProps {
+interface CommentDropDownProps {
   children: React.ReactNode;
   commentId: string;
   postId: string;
   userId: string;
+  currentUser: IUser | any;
 }
 
 export default function CommentDropDown({
   children,
   commentId,
   userId,
-}: postDropDownProps) {
-  const { user } = useCurrentUserForClient();
-
+  currentUser,
+}: CommentDropDownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>{children}</DropdownMenuTrigger>
@@ -37,7 +35,7 @@ export default function CommentDropDown({
           </Button>
         </DropdownMenuLabel>
 
-        {user?.id === userId && (
+        {currentUser?.id === userId && (
           <>
             <DropdownMenuSeparator className={`$ bottom-1`} />
             <DropdownMenuLabel className="cursor-pointer p-2 w-full">

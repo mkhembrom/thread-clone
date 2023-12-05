@@ -2,7 +2,6 @@ import { IComment } from "@/app/types";
 import React from "react";
 import AvatarCn from "../avatar/avatar";
 import PlusIcon from "../ui/icons/plus";
-import Image from "next/image";
 import CommentButtons from "../commentButtons/commentButtons";
 import { Button } from "../ui/button";
 import CommentDropDown from "../commentDropDown/commentDropDown";
@@ -54,7 +53,10 @@ export default async function UserReplies({ item }: userRepliesProps) {
                       <></>
                     )}
 
-                    <CommentButtons comment={item.parentComment} />
+                    <CommentButtons
+                      comment={item.parentComment}
+                      currentUser={currentUser}
+                    />
                     <Button
                       variant={"link"}
                       size={"link"}
@@ -79,7 +81,8 @@ export default async function UserReplies({ item }: userRepliesProps) {
                       <CommentDropDown
                         commentId={item.parentComment.id}
                         postId={item.parentComment.postId}
-                        userId={currentUser?.id!}
+                        userId={item.parentComment.userId}
+                        currentUser={currentUser}
                       >
                         <ThreeDotsIcon />
                       </CommentDropDown>
@@ -117,7 +120,7 @@ export default async function UserReplies({ item }: userRepliesProps) {
                       <></>
                     )}
 
-                    <CommentButtons comment={item} />
+                    <CommentButtons comment={item} currentUser={currentUser} />
                     <Button
                       variant={"link"}
                       size={"link"}
@@ -142,7 +145,8 @@ export default async function UserReplies({ item }: userRepliesProps) {
                       <CommentDropDown
                         commentId={item.id}
                         postId={item.postId}
-                        userId={currentUser?.id!}
+                        userId={item.user.id}
+                        currentUser={currentUser}
                       >
                         <ThreeDotsIcon />
                       </CommentDropDown>
@@ -192,9 +196,7 @@ export default async function UserReplies({ item }: userRepliesProps) {
                       variant={"ghost"}
                       size={"icon"}
                     >
-                      <PostDropDown postId={item?.id}>
-                        <ThreeDotsIcon />
-                      </PostDropDown>
+                      <PostDropDown postId={item?.id} />
                     </Button>
                   </div>
                 </div>
@@ -233,7 +235,7 @@ export default async function UserReplies({ item }: userRepliesProps) {
                       <></>
                     )}
 
-                    <CommentButtons comment={item} />
+                    <CommentButtons comment={item} currentUser={currentUser} />
                     <Button
                       variant={"link"}
                       size={"link"}
@@ -258,7 +260,8 @@ export default async function UserReplies({ item }: userRepliesProps) {
                       <CommentDropDown
                         commentId={item.id}
                         postId={item.postId}
-                        userId={currentUser?.id!}
+                        userId={item.user.id}
+                        currentUser={currentUser}
                       >
                         <ThreeDotsIcon />
                       </CommentDropDown>

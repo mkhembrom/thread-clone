@@ -17,7 +17,7 @@ interface User {
   password: string;
 }
 
-export default function Register({}: Props) {
+export default function Page({}: Props) {
   const router = useRouter();
 
   const initialUser: User = {

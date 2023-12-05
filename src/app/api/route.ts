@@ -52,14 +52,14 @@ export async function GET(request: NextRequest) {
     },
   });
 
-  // function compareDates(a: any, b: any) {
-  //   return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-  // }
+  function compareDates(a: any, b: any) {
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  }
 
-  // const allPosts = [...reposts, ...posts].sort(compareDates);
+  const allPosts = [...reposts, ...posts].sort(compareDates);
 
   return NextResponse.json({
-    allPosts: [...reposts, ...posts],
+    allPosts: allPosts,
     message: "success",
   });
 }

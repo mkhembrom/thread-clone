@@ -7,6 +7,8 @@ import ThemeProviders from "@/lib/themeProvider";
 import Header from "@/components/header/header";
 import Footer from "@/components/footer/footer";
 import { Toaster } from "react-hot-toast";
+import dns from "node:dns";
+dns.setDefaultResultOrder("ipv4first");
 
 const inter = Inter({ subsets: ["latin"] });
 

@@ -3,7 +3,7 @@ import Notification from "@/components/notification/notification";
 import { loginIsRequiredServer } from "@/lib/isLoginUser";
 type Props = {};
 
-export default async function page({}: Props) {
+export default async function Page({}: Props) {
   await loginIsRequiredServer();
 
   return (

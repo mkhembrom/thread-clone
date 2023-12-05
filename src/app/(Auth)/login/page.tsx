@@ -4,21 +4,17 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import React, { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
-import { motion } from "framer-motion";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
-import LoadingIcon from "@/components/ui/icons/loading";
 import toast from "react-hot-toast";
 import Link from "next/link";
-import { AiFillGithub } from "react-icons/ai";
-import { FcGoogle } from "react-icons/fc";
-import { revalidatePath } from "next/cache";
+import { login } from "@/actions/action";
 
 type User = {
   userinfo: string;
   password: string;
 };
 
-export default function Login() {
+export default function Page() {
   const initialUser: User = {
     userinfo: "",
     password: "",
@@ -123,26 +119,7 @@ export default function Login() {
         />
       </div>
       <div className="flex flex-col z-50">
-        {/* <div className="flex space-x-4 justify-end items-center my-4">
-          <p>Log in with </p>
-          <Button className="cursor-pointer" onClick={handleInstagram}>
-            <span className="mr-2">
-              <AiFillGithub />
-            </span>{" "}
-            Instagram
-          </Button>
-          <Button className="cursor-pointer" onClick={handleGoogle}>
-            <span className="mr-2">
-              {" "}
-              <FcGoogle />
-            </span>{" "}
-            Google
-          </Button>
-        </div> */}
-        <form
-          className="w-96 flex flex-col z-50 space-y-2"
-          onSubmit={handleSubmit}
-        >
+        <form className="w-96 flex flex-col z-50 space-y-2" action={login}>
           <input
             name="userinfo"
             className="p-4 rounded-lg outline-zinc-800 active:outline-1 outline-1"

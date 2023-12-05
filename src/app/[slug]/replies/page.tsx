@@ -5,8 +5,10 @@ import React from "react";
 
 type Props = {};
 
-export default async function Replies({}: Props) {
+export default async function Page({}: Props) {
   const { user: replies } = await getReplies();
+
+  console.log(replies);
   return (
     <div className="flex mx-auto w-full">
       <div className="flex items-center justify-center flex-col w-full">

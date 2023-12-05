@@ -11,16 +11,17 @@ import { formatTimeAgo } from "@/lib/timeFormat";
 import CrossIcon from "../ui/icons/cross";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import useCurrentUserForClient from "@/lib/clientComponent";
+import currentUser from "../currentUser/currentUser";
 
 interface commentToCommentProps {
   comment: IComment;
+  currentUser: IUser;
 }
 
 export default function CommentToCommentButton({
   comment,
+  currentUser,
 }: commentToCommentProps) {
-  const { user } = useCurrentUserForClient();
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const [preview, setPreview] = useState("");
@@ -105,9 +106,9 @@ export default function CommentToCommentButton({
             </p>
           </div>
           <div className="flex flex-row items-start space-x-3">
-            <AvatarCn source={user?.image!} />
+            <AvatarCn source={currentUser?.image!} />
             <div className="flex flex-col items-start justify-start">
-              <h1 className="text-base">{user?.name}</h1>
+              <h1 className="text-base">{currentUser?.name}</h1>
               <input
                 name="replytext"
                 className="bg-transparent outline-none border-none text-sm pb-3"
