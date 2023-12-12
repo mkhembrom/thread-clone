@@ -3,10 +3,8 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import PlusIcon from "../ui/icons/plus";
 import ReplyAndComment from "../replyAndComment/replyAndLikes";
-import ThreeDotsIcon from "../ui/icons/threeDots";
 import PostDropDown from "../postDropDown/postDropDown";
-import { ILike, IPost, IUser } from "@/app/types";
-import getCurrentUser from "../currentUser/currentUser";
+import { IPost } from "@/app/types";
 import ReplyUsers from "../replyUsers/replyUsers";
 import PostButtons from "../postButtons/postButtons";
 import { formatTimeAgo } from "@/lib/timeFormat";
@@ -60,9 +58,7 @@ export default async function Repost({ post }: PostProps) {
                 variant={"ghost"}
                 size={"icon"}
               >
-                <PostDropDown postId={post?.id}>
-                  <ThreeDotsIcon />
-                </PostDropDown>
+                <PostDropDown postId={post?.id as any} />
               </Button>
             </div>
           </div>

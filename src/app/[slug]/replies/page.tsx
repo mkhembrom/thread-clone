@@ -8,11 +8,10 @@ type Props = {};
 export default async function Page({}: Props) {
   const { user: replies } = await getReplies();
 
-  console.log(replies);
   return (
     <div className="flex mx-auto w-full">
       <div className="flex items-center justify-center flex-col w-full">
-        {replies.comments?.map((item: IComment | any, index: number) => (
+        {replies?.comments?.map((item: IComment | any, index: number) => (
           <UserReplies key={index} item={item} />
         ))}
       </div>

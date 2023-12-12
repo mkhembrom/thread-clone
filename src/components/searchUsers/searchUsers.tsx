@@ -6,9 +6,10 @@ import useStore from "@/store/store";
 
 interface searchUsersProps {
   users?: any;
+  currentUser: IUser;
 }
 
-export default function SearchUsers({ users }: searchUsersProps) {
+export default function SearchUsers({ users, currentUser }: searchUsersProps) {
   const tags = useStore((state) => state.searchTag);
 
   const seachedUser = users.filter((item: any) =>
@@ -21,7 +22,7 @@ export default function SearchUsers({ users }: searchUsersProps) {
         {seachedUser.map((item: IUser) => (
           <div key={item.id}>
             <Suspense fallback={<>Loading...</>}>
-              <UsersProfile user={item} />
+              <UsersProfile user={item} currentUser={currentUser} />
             </Suspense>
           </div>
         ))}

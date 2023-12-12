@@ -10,14 +10,13 @@ import AvatarCn from "../avatar/avatar";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import useCurrentUserForClient from "@/lib/clientComponent";
 
 interface userProfileProps {
   user: IUser;
+  currentUser: IUser;
 }
-export default function UsersProfile({ user }: userProfileProps) {
+export default function UsersProfile({ user, currentUser }: userProfileProps) {
   const router = useRouter();
-  const { user: u } = useCurrentUserForClient();
   const handleFollowUser = async (followUserId: string) => {
     toast
       .promise(
@@ -45,7 +44,7 @@ export default function UsersProfile({ user }: userProfileProps) {
       });
   };
 
-  const isFollowed = user.followedByIDs.includes(u?.id!);
+  const isFollowed = user.followedByIDs.includes(currentUser?.id!);
   return (
     <div className="flex space-x-2 w-full items-center  border-b border-zinc-800 py-4 ">
       <div>

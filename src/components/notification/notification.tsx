@@ -1,18 +1,17 @@
-"use client";
+"use server";
 import React from "react";
 import AvatarCn from "../avatar/avatar";
 import HeartLikeNotificationIcon from "../ui/icons/heartLikeNotificationIcon";
-import useNotification from "@/hooks/useNotification";
 import { INotification } from "@/app/types";
 import Link from "next/link";
-import MessageIcon from "../ui/icons/message";
 import MessageNotificationIcon from "../ui/icons/messageNotificationIcon";
 import { formatTimeAgo } from "@/lib/timeFormat";
+import { getNotification } from "@/actions/action";
 
 interface notificationProps {}
 
-export default function Notification({}: notificationProps) {
-  const { notify } = useNotification();
+export default async function Notification({}: notificationProps) {
+  const { notification: notify } = await getNotification();
 
   return (
     <>

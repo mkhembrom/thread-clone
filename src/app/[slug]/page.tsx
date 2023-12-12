@@ -15,7 +15,9 @@ export default async function Page({
   return (
     <div className="flex flex-col items-center justify-center w-full">
       {user ? (
-        user?.posts?.map((item: IPost) => <Post key={item?.id} post={item} />)
+        user?.posts?.map((item: IPost | any) => (
+          <Post key={item?.id} post={item} />
+        ))
       ) : (
         <p className="dark:text-zinc-600"> No threads</p>
       )}

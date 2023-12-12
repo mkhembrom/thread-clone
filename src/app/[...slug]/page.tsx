@@ -3,17 +3,15 @@ import React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import PostDropDown from "@/components/postDropDown/postDropDown";
-import ThreeDotsIcon from "@/components/ui/icons/threeDots";
 import PostButtons from "@/components/postButtons/postButtons";
 import { formatTimeAgo } from "@/lib/timeFormat";
 import ImagePreview from "@/components/imagePreview/imagePreview";
 import AvatarCn from "@/components/avatar/avatar";
 import ReplyAndLike from "@/components/replyAndComment/replyAndLikes";
-import getCurrentUser from "@/components/currentUser/currentUser";
 import { getPost } from "@/actions/action";
+import { IPost } from "../types";
 
 export default async function Page({ params }: { params: { slug: string } }) {
-  const currentUser = await getCurrentUser();
   const username = params.slug[0];
   const postId = params.slug[2];
   const { post } = await getPost(username, postId);
@@ -30,7 +28,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
         ></Link>
         <div className="flex z-30 items-center justify-between w-full">
           <div className="flex items-center space-x-4">
-            <AvatarCn source={post?.user?.image} />
+            <AvatarCn source={post?.user?.image as string} />
             <Link
               href={`/${post?.user?.username}`}
               scroll={true}
@@ -55,11 +53,11 @@ export default async function Page({ params }: { params: { slug: string } }) {
           </div>
         </div>
         <p className={`text-md pt-1 py-2`}>{post?.content}</p>
-        <ImagePreview imageData={post?.image} />
+        <ImagePreview imageData={post?.image as any} />
 
-        <PostButtons postData={post} />
+        <PostButtons postData={post as IPost | any} />
 
-        <ReplyAndLike postData={post} replies={post.comments} />
+        <ReplyAndLike postData={post as any} replies={post?.comments as any} />
       </div>
 
       <Replies postId={postId} />

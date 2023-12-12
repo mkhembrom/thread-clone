@@ -8,9 +8,10 @@ import { IUser } from "@/app/types";
 
 interface searchInputProps {
   users: IUser;
+  currentUser: IUser;
 }
 
-export default function SearchInput({ users }: searchInputProps) {
+export default function SearchInput({ users, currentUser }: searchInputProps) {
   const tags = useStore((state) => state.searchTag);
   const updateSearchTag = useStore((state) => state.updateSearchTag);
 
@@ -71,7 +72,7 @@ export default function SearchInput({ users }: searchInputProps) {
               </div>
             </div>
             <div className="w-[576px] min-h-min  bg-transparent border border-zinc-800 border-t-0 rounded-t-none rounded-xl px-4">
-              {users && <SearchUsers users={users} />}
+              {users && <SearchUsers users={users} currentUser={currentUser} />}
             </div>
           </div>
         </div>

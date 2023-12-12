@@ -71,58 +71,229 @@ export async function create(formData: FormData) {
 }
 
 export async function getProfile(slug: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_DB_HOST}/api/${slug}`, {
-    cache: "no-cache",
+  const user = await prisma?.user.findUnique({
+    where: {
+      username: slug,
+    },
+    include: {
+      following: true,
+      followedBy: true,
+      socials: true,
+      posts: {
+        select: {
+          id: true,
+          content: true,
+          createdAt: true,
+          image: {
+            orderBy: {
+              createdAt: "asc",
+            },
+          },
+          likes: true,
+          user: true,
+          comments: {
+            include: {
+              user: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+      comments: {
+        include: {
+          replies: true,
+          parentComment: {
+            include: {
+              user: true,
+              post: true,
+              likes: true,
+              images: true,
+            },
+          },
+          post: {
+            select: {
+              id: true,
+              content: true,
+              createdAt: true,
+              user: true,
+              image: true,
+              likes: true,
+            },
+          },
+          images: true,
+          user: true,
+          likes: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+      likes: true,
+      _count: true,
+    },
   });
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-  return res.json();
+  return { user };
 }
 
 export async function getRepost() {
   const currentUser = await getCurrentUser();
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_DB_HOST}/api/repost/${currentUser?.id}`,
-    { cache: "no-cache" }
-  );
-  if (!res.ok) throw new Error("fetch data is failed");
+  const repost = await prisma?.repost.findMany({
+    where: {
+      userId: currentUser?.id,
+    },
+    include: {
+      post: {
+        include: {
+          user: true,
+          image: true,
+          reposts: true,
+          comments: {
+            select: {
+              reply: true,
+              images: true,
+              user: true,
+            },
+          },
 
-  return res.json();
+          likes: {
+            select: {
+              userId: true,
+            },
+          },
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return { repost };
 }
 
 export async function getReplies() {
   const currentUser = await getCurrentUser();
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_DB_HOST}/api/${currentUser?.username}`,
-    {
-      method: "GET",
-      cache: "no-cache",
-    }
-  );
+  // const res = await fetch(
+  //   `${process.env.NEXT_PUBLIC_DB_HOST}/api/${currentUser?.username}`,
+  //   {
+  //     method: "GET",
+  //     cache: "no-cache",
+  //   }
+  // );
 
-  if (!res.ok) {
-    throw new Error("fetch data failed");
-  }
+  // if (!res.ok) {
+  //   throw new Error("fetch data failed");
+  // }
 
-  return res.json();
+  // return res.json();
+  const user = await prisma?.user.findUnique({
+    where: {
+      username: currentUser?.username as string,
+    },
+    include: {
+      following: true,
+      followedBy: true,
+      socials: true,
+      posts: {
+        select: {
+          id: true,
+          content: true,
+          createdAt: true,
+          image: {
+            orderBy: {
+              createdAt: "asc",
+            },
+          },
+          likes: true,
+          user: true,
+          comments: {
+            include: {
+              user: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+      comments: {
+        include: {
+          replies: true,
+          parentComment: {
+            include: {
+              user: true,
+              post: true,
+              likes: true,
+              images: true,
+            },
+          },
+          post: {
+            select: {
+              id: true,
+              content: true,
+              createdAt: true,
+              user: true,
+              image: true,
+              likes: true,
+            },
+          },
+          images: true,
+          user: true,
+          likes: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+      likes: true,
+      _count: true,
+    },
+  });
+
+  return { user };
 }
 
 export async function getPost(username: string, postId: string) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_DB_HOST}/api/post/${username}/post/${postId}`,
-    {
-      cache: "no-cache",
-    }
-  );
+  // const res = await fetch(
+  //   `${process.env.NEXT_PUBLIC_DB_HOST}/api/post/${username}/post/${postId}`,
+  //   {
+  //     cache: "no-cache",
+  //   }
+  // );
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-  return res.json();
+  // if (!res.ok) {
+  //   throw new Error("Failed to fetch data");
+  // }
+  // return res.json();
+
+  const post = await prisma?.post.findUnique({
+    where: {
+      id: postId,
+    },
+    include: {
+      user: true,
+      image: true,
+      comments: {
+        select: {
+          userId: true,
+          reply: true,
+          images: true,
+        },
+      },
+      likes: {
+        select: {
+          userId: true,
+        },
+      },
+    },
+  });
+
+  return { post };
 }
 
 export async function commentSubmit(formData: FormData) {
@@ -135,23 +306,122 @@ export async function commentSubmit(formData: FormData) {
 }
 
 export async function getAllPost() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_DB_HOST}/api/`, {
-    method: "GET",
-    cache: "no-cache",
+  const posts = await prisma?.post.findMany({
+    include: {
+      user: true,
+      image: true,
+      likes: true,
+      reposts: true,
+      comments: {
+        include: {
+          user: true,
+          images: true,
+          likes: true,
+        },
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
+
+  const reposts = await prisma?.repost.findMany({
+    select: {
+      post: {
+        include: {
+          user: true,
+          image: true,
+          likes: true,
+          reposts: true,
+          comments: {
+            include: {
+              user: true,
+              images: true,
+              likes: true,
+            },
+            orderBy: {
+              createdAt: "asc",
+            },
+          },
+        },
+      },
+      createdAt: true,
+      user: true,
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+  });
+
+  function compareDates(a: any, b: any) {
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   }
-  return res.json();
+
+  const allPosts = [...reposts, ...posts].sort(compareDates);
+  return { allPosts };
 }
 
-export async function login(formData: FormData) {
+export async function getNotification() {
+  const currentUser = await getCurrentUser();
+
+  const notification = await prisma?.notification.findMany({
+    where: {
+      toUserId: currentUser?.id,
+      NOT: {
+        userId: currentUser?.id,
+      },
+    },
+    include: {
+      user: true,
+      post: {
+        select: {
+          id: true,
+          content: true,
+          user: {
+            select: {
+              username: true,
+            },
+          },
+        },
+      },
+      comment: {
+        select: {
+          id: true,
+          reply: true,
+          postId: true,
+          user: {
+            select: {
+              username: true,
+            },
+          },
+        },
+      },
+    },
+
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return {
+    notification,
+  };
+}
+
+export async function loginAction(formData: FormData) {
   const userinfo = formData.get("userinfo");
   const password = formData.get("password");
 
-  await signIn("credentials", {
-    identifier: userinfo,
-    password: password,
-    redirect: false,
-  });
+  console.log(userinfo, password);
+
+  if (typeof window === "undefined") {
+    await signIn("credentials", {
+      identifier: userinfo,
+      password: password,
+      redirect: false,
+    });
+  }
 }

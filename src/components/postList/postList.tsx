@@ -7,16 +7,17 @@ import Repost from "../repost/repost";
 import RetweetIcon from "../ui/icons/retweet";
 import Link from "next/link";
 import { formatTimeAgo } from "@/lib/timeFormat";
+import prisma from "@/lib/prismadb";
+import { getAllPost } from "@/actions/action";
 
-type Props = {
-  allPosts: IPost[];
-};
+type Props = {};
 
-export default async function PostList({ allPosts }: Props) {
-  const posts = allPosts;
+export default async function PostList({}: Props) {
+  const { allPosts } = await getAllPost();
+
   return (
     <div className=" justify-center flex flex-col items-center py-4">
-      {posts.map((item: IPost) => {
+      {allPosts.map((item: IPost | any) => {
         if (item.post) {
           return (
             <div key={item.post.id} className="rounded-3xl w-full">

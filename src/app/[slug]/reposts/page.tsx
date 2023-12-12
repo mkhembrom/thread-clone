@@ -9,7 +9,7 @@ export default async function Page({}: repostProps) {
   const { repost } = await getRepost();
   return (
     <div className="flex flex-col items-center justify-center w-full">
-      {repost.map((item: IPost, index: number) => (
+      {repost.map((item: IPost | any, index: number) => (
         <Repost key={index} post={item.post} />
       ))}
     </div>

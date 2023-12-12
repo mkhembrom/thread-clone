@@ -7,7 +7,7 @@ import { signIn, useSession } from "next-auth/react";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import Link from "next/link";
-import { login } from "@/actions/action";
+import { loginAction } from "@/actions/action";
 
 type User = {
   userinfo: string;
@@ -119,7 +119,10 @@ export default function Page() {
         />
       </div>
       <div className="flex flex-col z-50">
-        <form className="w-96 flex flex-col z-50 space-y-2" action={login}>
+        <div
+          className="w-96 flex flex-col z-50 space-y-2"
+          // action={loginAction}
+        >
           <input
             name="userinfo"
             className="p-4 rounded-lg outline-zinc-800 active:outline-1 outline-1"
@@ -137,7 +140,18 @@ export default function Page() {
             onChange={handleChange}
           />
 
-          <Button type="submit" className="py-7 rounded-lg">
+          <Button
+            onClick={async () => {
+              await signIn("credentials", {
+                identifier: user.userinfo,
+                password: user.password,
+                redirect: false,
+              });
+              router.push("/");
+            }}
+            // type="submit"
+            className="py-7 rounded-lg"
+          >
             Log in
           </Button>
 
@@ -150,7 +164,7 @@ export default function Page() {
           >
             Create your account.
           </Link>
-        </form>
+        </div>
       </div>
     </div>
   );

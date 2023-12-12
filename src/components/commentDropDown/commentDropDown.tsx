@@ -22,7 +22,7 @@ interface CommentDropDownProps {
 export default function CommentDropDown({
   children,
   commentId,
-  userId,
+
   currentUser,
 }: CommentDropDownProps) {
   return (
@@ -35,7 +35,7 @@ export default function CommentDropDown({
           </Button>
         </DropdownMenuLabel>
 
-        {currentUser?.id === userId && (
+        {currentUser && (
           <>
             <DropdownMenuSeparator className={`$ bottom-1`} />
             <DropdownMenuLabel className="cursor-pointer p-2 w-full">
