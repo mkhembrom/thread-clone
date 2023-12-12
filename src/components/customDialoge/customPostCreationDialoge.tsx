@@ -81,6 +81,7 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
       console.log("error", e);
     } finally {
       clearData();
+      router.refresh();
     }
   };
 

@@ -360,6 +360,8 @@ export async function getAllPost() {
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   }
 
+  revalidatePath("/");
+
   const allPosts = [...reposts, ...posts].sort(compareDates);
   return { allPosts };
 }
