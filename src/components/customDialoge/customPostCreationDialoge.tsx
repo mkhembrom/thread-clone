@@ -15,7 +15,7 @@ import toast from "react-hot-toast";
 import CreateIcon from "../ui/icons/create";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { IImage, IPost, IUser } from "@/app/types";
-import { create } from "@/actions/action";
+import { create, handlePostCreation } from "@/actions/action";
 import { useRouter } from "next/navigation";
 import image from "next/image";
 import router from "next/router";
@@ -23,6 +23,8 @@ import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import { UploadApiResponse, v2 as cloudinary } from "cloudinary";
 import { uploadToCloudinary } from "@/lib/uploadToCloudinary";
 import { revalidatePath } from "next/cache";
+import prisma from "@/lib/prismadb";
+import { error } from "console";
 
 interface Props {
   customBtn?: boolean;
@@ -33,6 +35,7 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [imagefiles, setImageFiles] = useState<any>([]);
   const [file, setFile] = useState<FileList | null>(null);
   const [display, setDisplay] = useState<Array<{
     id: number;
@@ -52,36 +55,40 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
         }
       }
 
-      toast.promise(
-        fetch(
-          `${process.env.NEXT_PUBLIC_DB_HOST}/api/upload/post`,
+      setIsOpen(false);
+      toast
+        .promise(
+          fetch(
+            `${process.env.NEXT_PUBLIC_DB_HOST}/api/upload/post`,
 
+            {
+              method: "POST",
+              body: formData,
+              cache: "no-cache",
+            }
+          ),
           {
-            method: "POST",
-            body: formData,
-            cache: "no-cache",
-          }
-        ),
-        {
-          loading: "...Posting",
-          success: "Posted",
-          error: "Error when fetching",
-        },
-        {
-          style: {
-            borderRadius: "8px",
-            padding: "12px",
-            width: "250px",
-            backgroundColor: "black",
-            color: "white",
+            loading: "Posting",
+            success: "Posted",
+            error: "Error when fetching",
           },
-        }
-      );
-    } catch (e: any) {
-      console.log("error", e);
+          {
+            style: {
+              borderRadius: "8px",
+              padding: "12px",
+              width: "250px",
+              backgroundColor: "black",
+              color: "white",
+            },
+          }
+        )
+        .then(() => {
+          clearData();
+          router.refresh();
+        });
+    } catch {
+      console.log("Error");
     } finally {
-      clearData();
-      router.refresh();
     }
   };
 
@@ -135,6 +142,7 @@ function CustomPostCreationDialoge({ customBtn, currentUser }: Props) {
             </div>
             <form
               onSubmit={handleSubmit}
+              // action={create}
               className={`w-full flex flex-col items-start justify-start`}
             >
               <h1>{currentUser?.name}</h1>

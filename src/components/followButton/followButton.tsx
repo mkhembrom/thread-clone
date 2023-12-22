@@ -3,16 +3,15 @@ import React from "react";
 import { Button } from "../ui/button";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import useCurrentUserForClient from "@/lib/clientComponent";
 import { IUser } from "@/app/types";
 
 type followButtonProps = {
   user: IUser;
+  currentUser: IUser;
 };
 
-const FollowButton = ({ user }: followButtonProps) => {
+const FollowButton = ({ user, currentUser }: followButtonProps) => {
   const router = useRouter();
-  const { user: u } = useCurrentUserForClient();
   const handleFollowUser = async () => {
     toast
       .promise(
@@ -40,7 +39,7 @@ const FollowButton = ({ user }: followButtonProps) => {
       });
   };
 
-  const isFollowed = user?.followedByIDs.includes(u?.id!);
+  const isFollowed = user?.followedByIDs.includes(currentUser?.id);
   return (
     <Button
       variant={"outline"}

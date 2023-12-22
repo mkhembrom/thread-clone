@@ -49,6 +49,7 @@
     "react-hook-form": "^7.48.2",
     "react-hot-toast": "^2.4.1",
     "react-icons": "^4.11.0",
+    "react-loader-spinner": "^6.1.6",
     "react-medium-image-zoom": "^5.1.8",
     "react-spinners": "^0.13.8",
     "sharp": "^0.32.6",

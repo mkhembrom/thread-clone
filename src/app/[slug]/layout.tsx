@@ -1,13 +1,11 @@
+"use server";
 import React, { ReactNode } from "react";
 import { InstagramIcon } from "lucide-react";
 import { FaXTwitter } from "react-icons/fa6";
 import Tabs from "@/components/tabs/tabs";
 import getCurrentUser from "@/components/currentUser/currentUser";
 import AvatarCn from "@/components/avatar/avatar";
-import { redirect } from "next/navigation";
 import Link from "next/link";
-import { IUser } from "../types";
-import { Button } from "@/components/ui/button";
 import FollowButton from "@/components/followButton/followButton";
 import EditProfileButton from "@/components/editProfileButton/editProfileButton";
 import { loginIsRequiredServer } from "@/lib/isLoginUser";
@@ -52,9 +50,9 @@ export default async function Layout({ children, params }: Props) {
       <p className="flex my-4 text-base">{user?.bio!}</p>
       <div className="flex justify-between items-center">
         <div className="text-md flex flex-row space-x-2 font-light text-gray-900 dark:text-zinc-300">
-          {user?.followedBy.length > 0 && (
+          {user?.followedBy && (
             <div
-              key={lastProfile.id}
+              key={lastProfile?.id}
               className="rounded-full flex justify-center items-center "
             >
               <AvatarCn source={lastProfile?.image!} width="5" height="5" />
@@ -84,18 +82,20 @@ export default async function Layout({ children, params }: Props) {
       </div>
       <div>
         {currentUser?.username === username ? (
-          <EditProfileButton user={user} />
+          <EditProfileButton user={user as any} />
         ) : (
-          <FollowButton user={user} />
+          <FollowButton user={user as any} currentUser={currentUser as any} />
         )}
       </div>
       <div className={`flex items-center justify-center`}>
         {/* <ClientComponent> */}
-        <Tabs user={user} />
+        <Tabs user={user as any} />
         {/* </ClientComponent> */}
       </div>
 
-      {children}
+      <div className="flex items-center justify-center w-full h-full">
+        {children}
+      </div>
     </div>
   );
 }

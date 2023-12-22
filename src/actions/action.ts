@@ -6,6 +6,7 @@ import getCurrentUser from "@/components/currentUser/currentUser";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { signIn } from "next-auth/react";
+import { uploadToCloudinary } from "@/lib/uploadToCloudinary";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -16,7 +17,7 @@ cloudinary.config({
 export async function create(formData: FormData) {
   const currentUser = await getCurrentUser();
   const content = formData.get("content");
-  const file = formData.get("image") as unknown as File;
+  const file = formData.get("image") as unknown as FileList;
 
   if (!file) {
     throw new Error("File Error");
@@ -29,45 +30,22 @@ export async function create(formData: FormData) {
     },
   });
 
-  const arrayBuffer = await file.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
+  for (let i = 0; i < file.length; i++) {
+    const data = await uploadToCloudinary(file[i] as File);
 
-  const resultData = await new Promise<UploadApiResponse | undefined>(
-    (resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream(
-          {
-            folder: "threads/post",
-            upload_preset: "ml_default",
-            resource_type: "image",
-          },
-          (error, result) => {
-            if (error) {
-              reject(error);
-            } else {
-              resolve(result);
-            }
-          }
-        )
-        .end(buffer);
+    if (data) {
+      const { secure_url, original_filename } = data;
+
+      await prisma.image.createMany({
+        data: <Image>{
+          postId: post.id,
+          imageUrl: secure_url,
+          imageName: original_filename,
+        },
+      });
     }
-  );
-
-  if (resultData) {
-    const { secure_url, original_filename } = resultData;
-
-    await prisma.image.createMany({
-      data: <Image>{
-        postId: post.id,
-        imageUrl: secure_url,
-        imageName: original_filename,
-      },
-    });
-
-    revalidatePath("/");
-    return NextResponse.json({ message: "Posted" });
   }
-  return NextResponse.json({ message: "Error" });
+  revalidatePath("/");
 }
 
 export async function getProfile(slug: string) {
@@ -426,4 +404,46 @@ export async function loginAction(formData: FormData) {
       redirect: false,
     });
   }
+}
+
+export async function handlePostCreation(formData: FormData) {
+  const currentUser = await getCurrentUser();
+  const content = formData.get("content");
+  const files = formData.get("image") as unknown as FileList;
+  let filesimage = [];
+  try {
+    for (let i = 0; i < files.length; i++) {
+      const data = await uploadToCloudinary(files[i] as File);
+      // setImageFiles([...imagefiles, data]);
+      filesimage.push({
+        original_filename: data.original_filename,
+        imageUrl: data.secure_url,
+      });
+    }
+
+    // const imagePost = filesimage.map(
+    //   (img: { original_filename: any; secure_url: any }) => ({
+    //     imageName: img.original_filename,
+    //     imageUrl: img.secure_url,
+    //   })
+    // );
+
+    console.log(content, files);
+    console.log(filesimage);
+
+    const post = await prisma.post.create({
+      data: {
+        userId: currentUser?.id as string,
+        content: content as string,
+        image: {
+          createMany: {
+            data: filesimage,
+          },
+        },
+      },
+    });
+  } catch (e: any) {
+    console.log("error", e);
+  }
+  revalidatePath("/");
 }

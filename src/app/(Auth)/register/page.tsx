@@ -172,7 +172,7 @@ export default function Page({}: Props) {
             onChange={handleInputChange}
             value={user.name}
             name="name"
-            className="p-4 rounded-lg outline-zinc-800 active:outline-1 outline-1"
+            className="p-4 rounded-lg outline-zinc-800 active:outline-1 outline-1 border-2 border-zinc-600"
             placeholder="Name"
             type="text"
           />
@@ -180,7 +180,7 @@ export default function Page({}: Props) {
             onChange={handleInputChange}
             value={user.username}
             name="username"
-            className="p-4 rounded-lg outline-zinc-800 active:outline-1 outline-1"
+            className="p-4 rounded-lg outline-zinc-800 active:outline-1 outline-1 border-2 border-zinc-600"
             placeholder="Username"
             type="text"
           />
@@ -188,7 +188,7 @@ export default function Page({}: Props) {
             onChange={handleInputChange}
             value={user.email}
             name="email"
-            className="p-4 rounded-lg outline-zinc-800 active:outline-1 outline-1"
+            className="p-4 rounded-lg outline-zinc-800 active:outline-1 outline-1 border-2 border-zinc-600"
             placeholder="Email"
             type="email"
           />
@@ -196,7 +196,7 @@ export default function Page({}: Props) {
             onChange={handleInputChange}
             value={user.password}
             name="password"
-            className="p-4 rounded-lg "
+            className="p-4 rounded-lg border-2 border-zinc-600"
             placeholder="Password"
             type="password"
           />

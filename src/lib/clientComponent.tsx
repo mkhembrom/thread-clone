@@ -1,17 +1,17 @@
-// "use client";
+"use client";
 
-// import { useState, useEffect, ReactNode } from "react";
+import { useState, useEffect, ReactNode } from "react";
 
-// type clientComponentProps = {
-//   children: ReactNode;
-// };
+type clientComponentProps = {
+  children: ReactNode;
+};
 
-// export default function ClientComponent({ children }: clientComponentProps) {
-//   const [isClient, setIsClient] = useState(false);
+export default function ClientComponent({ children }: clientComponentProps) {
+  const [isClient, setIsClient] = useState(false);
 
-//   useEffect(() => {
-//     setIsClient(true);
-//   }, []);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
-//   return <>{isClient ? <>{children}</> : null}</>;
-// }
+  return <>{isClient ? <>{children}</> : null}</>;
+}

@@ -125,7 +125,7 @@ export default function Page() {
         >
           <input
             name="userinfo"
-            className="p-4 rounded-lg outline-zinc-800 active:outline-1 outline-1"
+            className="p-4 rounded-lg outline-zinc-800 active:outline-1 outline-1 border-2 border-zinc-600"
             placeholder="Email or Username"
             type="text"
             value={user.userinfo}
@@ -133,7 +133,7 @@ export default function Page() {
           />
           <input
             name="password"
-            className="p-4 rounded-lg "
+            className="p-4 rounded-lg border-2 border-zinc-600"
             placeholder="Password"
             type="password"
             value={user.password}
