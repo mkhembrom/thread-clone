@@ -7,6 +7,7 @@ import ThemeProviders from "@/lib/themeProvider";
 import Header from "@/components/header/header";
 import Footer from "@/components/footer/footer";
 import { Toaster } from "react-hot-toast";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import dns from "node:dns";
 import ClientComponent from "@/lib/clientComponent";
 dns.setDefaultResultOrder("ipv4first");
@@ -56,6 +57,7 @@ export default async function RootLayout({ children }: rootLayoutProps) {
               {session && <Header />}
               <div className="w-screen max-w-xl mx-auto px-4 md:px-0">
                 {children}
+                <SpeedInsights />
               </div>
               <Footer image={session?.image!} username={session?.username!} />
             </ThemeProviders>
