@@ -51,18 +51,16 @@ export default async function RootLayout({ children }: rootLayoutProps) {
         suppressHydrationWarning={false}
         className={`overflow-y-scroll dark:bg-[#101010] ${inter.className}`}
       >
-        <ClientComponent>
-          <SessionProviderWrapper customSession={session}>
-            <ThemeProviders>
-              {session && <Header />}
-              <div className="w-screen max-w-xl mx-auto px-4 md:px-0">
-                {children}
-                <SpeedInsights />
-              </div>
-              <Footer image={session?.image!} username={session?.username!} />
-            </ThemeProviders>
-          </SessionProviderWrapper>
-        </ClientComponent>
+        <SessionProviderWrapper customSession={session}>
+          <ThemeProviders>
+            {session && <Header />}
+            <div className="w-screen max-w-xl mx-auto px-4 md:px-0">
+              <ClientComponent>{children}</ClientComponent>
+              <SpeedInsights />
+            </div>
+            <Footer image={session?.image!} username={session?.username!} />
+          </ThemeProviders>
+        </SessionProviderWrapper>
         <Toaster position="bottom-center" reverseOrder={false} />
       </body>
     </html>
