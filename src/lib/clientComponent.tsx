@@ -11,7 +11,7 @@ export default function ClientComponent({ children }: clientComponentProps) {
 
   useEffect(() => {
     setIsClient(true);
-  }, []);
+  }, [isClient]);
 
   return <>{isClient ? <>{children}</> : null}</>;
 }
