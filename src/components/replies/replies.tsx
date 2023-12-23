@@ -1,5 +1,3 @@
-import React from "react";
-
 import { IComment } from "@/app/types";
 
 import RootComment from "../rootComment/rootComment";

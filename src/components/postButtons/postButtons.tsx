@@ -1,5 +1,4 @@
 import { IPost, IUser } from "@/app/types";
-import React from "react";
 import { Button } from "../ui/button";
 import CustomComment from "../customComment/customComment";
 import MessageIcon from "../ui/icons/message";
