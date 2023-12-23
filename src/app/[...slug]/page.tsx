@@ -9,6 +9,7 @@ import AvatarCn from "@/components/avatar/avatar";
 import ReplyAndLike from "@/components/replyAndComment/replyAndLikes";
 import { getPost } from "@/actions/action";
 import { IPost } from "../types";
+import ClientComponent from "@/lib/clientComponent";
 
 export default async function Page({ params }: { params: { slug: string } }) {
   const username = params.slug[0];
@@ -28,7 +29,9 @@ export default async function Page({ params }: { params: { slug: string } }) {
           ></Link>
           <div className="flex z-30 items-center justify-between w-full">
             <div className="flex items-center space-x-4">
-              <AvatarCn source={post?.user?.image as string} />
+              <ClientComponent>
+                <AvatarCn source={post?.user?.image as string} />
+              </ClientComponent>
               <Link
                 href={`/${post?.user?.username}`}
                 scroll={true}
@@ -48,7 +51,9 @@ export default async function Page({ params }: { params: { slug: string } }) {
                 variant={"ghost"}
                 size={"icon"}
               >
-                <PostDropDown postId={post?.id} userId={post?.userId} />
+                <ClientComponent>
+                  <PostDropDown postId={post?.id} userId={post?.userId} />
+                </ClientComponent>
               </Button>
             </div>
           </div>
@@ -57,10 +62,12 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
           <PostButtons postData={post as IPost | any} />
 
-          <ReplyAndLike
-            postData={post as any}
-            replies={post?.comments as any}
-          />
+          <ClientComponent>
+            <ReplyAndLike
+              postData={post as any}
+              replies={post?.comments as any}
+            />
+          </ClientComponent>
         </div>
 
         <Replies postId={postId} />
