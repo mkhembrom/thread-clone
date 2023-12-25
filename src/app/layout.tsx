@@ -1,6 +1,5 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import SessionProviderWrapper from "@/lib/sessionProvider";
 import getCurrentUser from "@/components/currentUser/currentUser";
 import ThemeProviders from "@/lib/themeProvider";
@@ -11,8 +10,6 @@ import dns from "node:dns";
 import ClientComponent from "@/lib/clientComponent";
 import Header from "@/components/header/header";
 dns.setDefaultResultOrder("ipv4first");
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Threads",
@@ -49,11 +46,11 @@ export default async function RootLayout({ children }: rootLayoutProps) {
     <html lang="en">
       <body
         suppressHydrationWarning={false}
-        className={`overflow-y-scroll dark:bg-[#101010] ${inter.className}`}
+        className={`overflow-y-scroll dark:bg-[#101010]`}
       >
         <SessionProviderWrapper customSession={session}>
           <ThemeProviders>
-            {session && <Header />}
+            {session ? <Header /> : null}
             <div className="w-screen max-w-xl mx-auto px-4 md:px-0">
               {/* <ClientComponent> */}
               {children}

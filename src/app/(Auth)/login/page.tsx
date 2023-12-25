@@ -4,7 +4,12 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import React, { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
-import { redirect, useRouter, useSearchParams } from "next/navigation";
+import {
+  redirect,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { loginAction } from "@/actions/action";
@@ -21,11 +26,13 @@ export default function Page() {
   };
 
   const session = useSession();
-
-  if (session) {
-    redirect("/");
-  }
   const router = useRouter();
+
+  const pathname = usePathname();
+
+  if (!session) {
+    redirect("/login");
+  }
 
   const searchParams = useSearchParams();
   const message = searchParams.get("message");
@@ -93,7 +100,6 @@ export default function Page() {
           toast.error(result.error);
         } else {
           toast.success("Login succesfull");
-          router.push("/");
           router.refresh();
         }
       }

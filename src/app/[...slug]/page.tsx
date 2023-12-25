@@ -10,11 +10,28 @@ import ReplyAndLike from "@/components/replyAndComment/replyAndLikes";
 import { getPost } from "@/actions/action";
 import { IPost } from "../types";
 import ClientComponent from "@/lib/clientComponent";
+import prisma from "@/lib/prismadb";
 
 export default async function Page({ params }: { params: { slug: string } }) {
   const username = params.slug[0];
   const postId = params.slug[2];
-  const { post } = await getPost(username, postId);
+  // const { post } = await getPost(username, postId);
+
+  const post = await prisma?.post.findUnique({
+    where: {
+      id: postId as string,
+    },
+    include: {
+      user: true,
+      image: true,
+      comments: true,
+      likes: {
+        select: {
+          userId: true,
+        },
+      },
+    },
+  });
 
   const formattedDate = formatTimeAgo(`${post?.createdAt}`);
 
