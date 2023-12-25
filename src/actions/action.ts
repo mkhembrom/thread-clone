@@ -237,41 +237,35 @@ export async function getReplies() {
 }
 
 export async function getPost(username: string, postId: string) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_DB_HOST}/api/post/${username}/post/${postId}`,
-    {
-      cache: "no-cache",
-    }
-  );
+  // const res = await fetch(
+  //   `${process.env.NEXT_PUBLIC_DB_HOST}/api/post/${username}/post/${postId}`,
+  //   {
+  //     cache: "no-cache",
+  //   }
+  // );
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-  return res.json();
+  // if (!res.ok) {
+  //   throw new Error("Failed to fetch data");
+  // }
+  // return res.json();
 
-  // const post = await prisma?.post.findUnique({
-  //   where: {
-  //     id: postId,
-  //   },
-  //   include: {
-  //     user: true,
-  //     image: true,
-  //     comments: {
-  //       select: {
-  //         userId: true,
-  //         reply: true,
-  //         images: true,
-  //       },
-  //     },
-  //     likes: {
-  //       select: {
-  //         userId: true,
-  //       },
-  //     },
-  //   },
-  // });
+  const post = await prisma?.post.findFirst({
+    where: {
+      id: postId as string,
+    },
+    include: {
+      user: true,
+      image: true,
+      comments: true,
+      likes: {
+        select: {
+          userId: true,
+        },
+      },
+    },
+  });
 
-  // return { post };
+  return { post };
 }
 
 export async function commentSubmit(formData: FormData) {

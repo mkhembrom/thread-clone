@@ -22,8 +22,8 @@ export default function Page() {
 
   const session = useSession();
 
-  if (!session) {
-    redirect("/login");
+  if (session) {
+    redirect("/");
   }
   const router = useRouter();
 

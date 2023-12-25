@@ -33,7 +33,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                 <AvatarCn source={post?.user?.image as string} />
               </ClientComponent>
               <Link
-                href={`/${post?.user?.username}`}
+                href={`/${post?.user?.username as string}`}
                 scroll={true}
                 className={`text-md font-bold hover:underline`}
               >
