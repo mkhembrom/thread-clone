@@ -41,7 +41,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
         <div className="flex flex-col items-start w-full relative">
           <Link
             className="absolute top-0 left-0 right-0 bottom-0"
-            href={`/${username}/post/${post?.id}`}
+            href={`/${username as string}/post/${post?.id as string}`}
             replace
           ></Link>
           <div className="flex z-30 items-center justify-between w-full">
