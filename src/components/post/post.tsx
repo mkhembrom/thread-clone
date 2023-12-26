@@ -45,6 +45,7 @@ export default async function Post({ post }: PostProps) {
             className="absolute top-0 left-0 right-0 bottom-0"
             href={`/${post?.user?.username}/post/${post?.id}`}
           ></Link>
+          {/* <h1>{`/${post?.user?.username}/post/${post?.id}`}</h1> */}
 
           <div className="flex z-30 justify-between w-full">
             <Link

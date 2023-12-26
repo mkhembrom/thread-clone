@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import React, { Suspense } from "react";
 import CustomLink from "../customLink/customLink";
@@ -8,15 +9,22 @@ import { DropdownMenuCheckboxes } from "../dropdown/dropdown";
 import CustomPostCreationDialoge from "../customDialoge/customPostCreationDialoge";
 import Link from "next/link";
 import HeartIconOne from "../ui/icons/heartOne";
-import getCurrentUser from "../currentUser/currentUser";
 import CustomBackArrow from "../customBackArrow/customBackArrow";
+import { usePathname, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 type Props = {
   backArrow?: boolean;
+  currentUser: any;
 };
 
-export default async function Header({ backArrow }: Props) {
-  const currentUser = await getCurrentUser();
+export default function Header({ backArrow, currentUser }: Props) {
+  const pathname = usePathname();
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  if (pathname === "/login") return null;
+  if (pathname === "/login" && session) router.push("/");
 
   return (
     <header

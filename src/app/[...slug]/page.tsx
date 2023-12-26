@@ -12,14 +12,10 @@ import { IPost } from "../types";
 import ClientComponent from "@/lib/clientComponent";
 import prisma from "@/lib/prismadb";
 
-export default async function Page({ params }: { params: { slug: string } }) {
-  const username = params.slug[0];
-  const postId = params.slug[2];
-  // const { post } = await getPost(username, postId);
-
+async function getPosts(postId: string) {
   const post = await prisma?.post.findUnique({
     where: {
-      id: postId as string,
+      id: postId,
     },
     include: {
       user: true,
@@ -32,6 +28,14 @@ export default async function Page({ params }: { params: { slug: string } }) {
       },
     },
   });
+
+  return post;
+}
+
+export default async function Page({ params }: { params: { slug: string } }) {
+  const username = params.slug[0];
+  const postId = params.slug[2];
+  const post = await getPosts(postId);
 
   const formattedDate = formatTimeAgo(`${post?.createdAt}`);
 

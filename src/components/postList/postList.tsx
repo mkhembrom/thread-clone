@@ -26,7 +26,7 @@ export default async function PostList({}: Props) {
                   <RetweetIcon />
                 </span>
                 <Link
-                  href={`/${item.user.username}`}
+                  href={`/${item?.user?.username}`}
                   className="hover:underline mr-2"
                 >
                   {item.user.username}
@@ -34,7 +34,7 @@ export default async function PostList({}: Props) {
                 reposted {formatTimeAgo(`${item.createdAt}`)}
               </p>
 
-              <Repost post={item.post} />
+              <Repost post={item?.post} />
             </div>
           );
         }

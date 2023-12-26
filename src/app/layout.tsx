@@ -9,6 +9,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import dns from "node:dns";
 import ClientComponent from "@/lib/clientComponent";
 import Header from "@/components/header/header";
+import MainLayout from "./(MainLayout)/layout";
 dns.setDefaultResultOrder("ipv4first");
 
 export const metadata: Metadata = {
@@ -50,14 +51,14 @@ export default async function RootLayout({ children }: rootLayoutProps) {
       >
         <SessionProviderWrapper customSession={session}>
           <ThemeProviders>
-            {session ? <Header /> : null}
-            <div className="w-screen max-w-xl mx-auto px-4 md:px-0">
-              {/* <ClientComponent> */}
-              {children}
-              {/* </ClientComponent> */}
-              <SpeedInsights />
-            </div>
-            <Footer image={session?.image!} username={session?.username!} />
+            <ClientComponent>
+              <Header currentUser={session} />
+              <div className="w-screen max-w-xl mx-auto px-4 md:px-0">
+                {children}
+              </div>
+              <Footer image={session?.image!} username={session?.username!} />
+            </ClientComponent>
+            <SpeedInsights />
           </ThemeProviders>
         </SessionProviderWrapper>
         <Toaster position="bottom-center" reverseOrder={false} />
