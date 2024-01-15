@@ -422,3 +422,66 @@ export async function handlePostCreation(formData: FormData) {
   }
   revalidatePath("/");
 }
+
+export async function handleLikePost(postId: string) {
+  const currentUser = await getCurrentUser();
+
+  const userId = currentUser?.id;
+
+  const existingLike = await prisma?.like.findFirst({
+    where: {
+      postId: postId,
+      userId: userId,
+    },
+  });
+
+  let likedUpdate;
+
+  if (existingLike) {
+    // User already liked, so remove the like
+    likedUpdate = await prisma?.like.delete({
+      where: {
+        id: existingLike.id,
+      },
+    });
+    revalidatePath("/");
+  } else {
+    // User didn't like, so add a like
+    likedUpdate = await prisma?.like.create({
+      data: {
+        postId,
+        userId,
+      },
+    });
+
+    const postID = await prisma?.post.findUnique({
+      where: {
+        id: postId,
+      },
+    });
+
+    const notify = await prisma?.notification.create({
+      data: {
+        userId: userId,
+        toUserId: postID?.userId,
+        body: `${currentUser?.username} liked a post`,
+        postId: postID?.id,
+      },
+      select: {
+        post: {
+          select: {
+            id: true,
+            user: {
+              select: {
+                username: true,
+              },
+            },
+          },
+        },
+        userId: true,
+        toUserId: true,
+      },
+    });
+    revalidatePath("/");
+  }
+}
