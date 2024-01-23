@@ -52,7 +52,7 @@ export default async function RootLayout({ children }: rootLayoutProps) {
         <SessionProviderWrapper customSession={session}>
           <ThemeProviders>
             <ClientComponent>
-              {session && <Header currentUser={session} />}
+              {session ? <Header currentUser={session} /> : null}
 
               <div className="w-screen max-w-xl mx-auto px-4 md:px-0">
                 {children}

@@ -39,21 +39,21 @@ export default function PostLikeButton({
     }
   };
 
-  const predicate = (like: Like) =>
-    like.userId === currentUser?.id && like.postId === postData?.id;
+  // const predicate = (like: Like) =>
+  //   like.userId === currentUser?.id && like.postId === postData?.id;
 
-  const likes = postData?.likes!;
-  const [optimisticLikes, addOptimisticLikes] = experimental_useOptimistic<
-    Like[]
-  >(
-    postData?.likes,
-    //@ts-ignore
-    (state: Like[], newLike: Like) =>
-      state.some(predicate)
-        ? state.filter((like) => like.userId !== (currentUser?.id as string))
-        : [...state, newLike]
-  );
-  // isLiked = postData?.likes?.some((item) => item?.userId === currentUser?.id);
+  // const likes = postData?.likes!;
+  // const [optimisticLikes, addOptimisticLikes] = experimental_useOptimistic<
+  //   Like[]
+  // >(
+  //   postData?.likes,
+  //   //@ts-ignore
+  //   (state: Like[], newLike: Like) =>
+  //     state.some(predicate)
+  //       ? state.filter((like) => like.userId !== (currentUser?.id as string))
+  //       : [...state, newLike]
+  // );
+  isLiked = postData?.likes?.some((item) => item?.userId === currentUser?.id);
 
   useEffect(() => {
     setMount(true);
@@ -66,14 +66,14 @@ export default function PostLikeButton({
       variant={"ghost"}
       className="rounded-full"
       size={"icon"}
-      onClick={async () => {
-        const postId = postData?.id;
-        const userId = currentUser.id;
-        addOptimisticLikes({ postId });
-        await handleLikePost(postData?.id as string);
-      }}
+      onClick={() =>
+        // const postId = postData?.id;
+        // const userId = currentUser.id;
+        // addOptimisticLikes({ postId });
+        handleLike(postData?.id as string)
+      }
     >
-      {optimisticLikes ? <HeartLikeIcon /> : <HeartIcon />}
+      {isLiked ? <HeartLikeIcon /> : <HeartIcon />}
     </Button>
   );
 }
